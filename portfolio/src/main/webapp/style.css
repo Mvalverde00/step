@@ -2,6 +2,7 @@
   margin-left: auto;
   margin-right: auto;
   width: 650px;
+  text-align:center;
 }
 
 #greeting-container {
@@ -12,6 +13,24 @@
   font: .7em;
   text-align: center;
 }
+
+
+#biscuit-container {
+  height:200px;
+}
+
+#biscuit-p {
+  height:100%;
+  float:left;
+  text-align:left;
+}
+
+#biscuit-img {
+  height:100%;
+  float:right;
+  padding-left: 10px;
+}
+
 
 .thumbnail-16 {
     width: 16px;
