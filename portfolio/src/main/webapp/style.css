@@ -32,6 +32,23 @@
 }
 
 
+
+#projects {
+  width:100%;
+  height: auto;
+  overflow:auto;
+}
+
+.project-container {
+  width:45%;
+}
+.project-img {
+  width: 90%;
+  padding-left:15px;
+}
+
+
+
 .thumbnail-16 {
     width: 16px;
     height: 16px;
