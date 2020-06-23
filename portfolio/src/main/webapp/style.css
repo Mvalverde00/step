@@ -5,13 +5,15 @@
   text-align:center;
 }
 
-#greeting-container {
+#trivia-container {
   margin-top: 20px;
+  font-style: italic;
 }
 
 #footer {
-  font: .7em;
+  font-size: .7em;
   text-align: center;
+  padding-top: 5px;
 }
 
 

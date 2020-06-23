@@ -12,17 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function addRandomText(choices, elementId) {
+  const choice = choices[Math.floor(Math.random() * choices.length)];
+
+  const container = document.getElementById(elementId);
+  container.innerText = choice;
+}
+
+
 /**
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+  addRandomText(['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'], 'greeting-container');
+}
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+function addRandomTrivia() {
+  addRandomText(['My favorite color is green.', 'Although I live in New Jersey, I went to high school in New York.',
+                'I know two dead languages-- Latin and Ancient Greek!', 'My middle name is McAlarney'], 'trivia-container');
 }
