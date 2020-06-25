@@ -96,8 +96,9 @@ class Quiz {
 
     this.container.innerHTML = '';
 
-    this.container.insertAdjacentHTML('beforeend', `<p>Question
-        ${this.currQuizQuestion + 1}: ${quizQuestion.question}</p>`);
+    this.container.insertAdjacentHTML('beforeend',
+        `<p>Question ${this.currQuizQuestion + 1}: ${quizQuestion.question}</p>`
+    );
 
     for (let i = 0; i < quizQuestion.choices.length; i++) {
       const radio = this.getRadioInputString(quizQuestion.choices[i], i);
@@ -159,7 +160,7 @@ class Quiz {
         `<p>
            Thank you for taking the time to play this trivia game.
            You answered <b>${this.correctAnswers}</b> questions correctly out of
-          <b>${this.quizQuestions.length}</b>.
+           <b>${this.quizQuestions.length}</b>.
          </p>
          <p><a href="/index.html">Go back to the main page?</a></p>`
     );
