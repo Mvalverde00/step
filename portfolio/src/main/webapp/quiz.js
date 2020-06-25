@@ -37,8 +37,8 @@ class QuizQuestion {
 
     /**
      * @type {List<string>} A list of an arbitrary number of possible
-     * answers to the question, exactly one of which should be correct
-      */
+     *    answers to the question, exactly one of which should be correct
+     */
     this.choices = choices;
 
     /** @type {int} The index of the choice in choices that is correct*/
@@ -61,12 +61,12 @@ class Quiz {
 
     /**
      * @type {HTMLElement} The div in which the question prompt and
-     * answer choices will be rendered
+     *    answer choices will be rendered
      */
     this.container = document.getElementById(divID);
     /**
      * @type {HTMLElement} The div in which feedback to the user
-     * will be rendered
+     *    will be rendered
      */
     this.feedbackContainer = document.getElementById(feedbackDivID);
 
@@ -167,19 +167,24 @@ class Quiz {
 };
 
 window.onload = () => {
-  const q1 = new QuizQuestion('Where am I from?',
-      ['New York', 'New Jersey', 'California', 'Connecticut'], 1);
-  const q2 = new QuizQuestion('What is my dog\'s name?',
-      ['Coffee', 'Doughnut', 'Biscuit', 'Bailey'], 2);
+  const q1 = new QuizQuestion('Where am I from?', [
+    'New York', 'New Jersey', 'California', 'Connecticut',
+  ], 1);
+  const q2 = new QuizQuestion('What is my dog\'s name?', [
+    'Coffee', 'Doughnut', 'Biscuit', 'Bailey',
+  ], 2);
   const q3 = new QuizQuestion(
-      'Which of the following areas am I most interested in?',
-      ['Virtual Reality', 'Machine Learning', 'App Development',
-      'Computational Biolog'], 0);
+      'Which of the following areas am I most interested in?', [
+        'Virtual Reality', 'Machine Learning', 'App Development',
+        'Computational Biology',
+      ], 0);
   const q4 = new QuizQuestion(
-      'Which of the following languages have I never studied?',
-      ['Latin', 'English', 'Ancient Greek', 'Spanish'], 3);
-  const q5 = new QuizQuestion('What is my favorite color?',
-      ['Red', 'Green', 'Cyan', 'Magenta'], 1);
+      'Which of the following languages have I never studied?', [
+        'Latin', 'English', 'Ancient Greek', 'Spanish',
+      ], 3);
+  const q5 = new QuizQuestion('What is my favorite color?', [
+    'Red', 'Green', 'Cyan', 'Magenta',
+  ], 1);
 
   const quiz =
       new Quiz([q1, q2, q3, q4, q5], 'trivia-display', 'trivia-feedback');
