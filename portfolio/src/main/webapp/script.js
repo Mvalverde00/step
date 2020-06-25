@@ -24,10 +24,16 @@ function addRandomText(choices, elementId) {
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
-  addRandomText(['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'], 'greeting-container');
+  addRandomText([
+    'Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!',
+  ], 'greeting-container');
 }
 
 function addRandomTrivia() {
-  addRandomText(['My favorite color is green.', 'Although I live in New Jersey, I went to high school in New York.',
-                'I know two dead languages-- Latin and Ancient Greek!', 'My middle name is McAlarney'], 'trivia-container');
+  addRandomText([
+    'My favorite color is green.',
+    'Although I live in New Jersey, I went to high school in New York.',
+    'I know two dead languages-- Latin and Ancient Greek!',
+    'My middle name is McAlarney',
+  ], 'trivia-container');
 }
