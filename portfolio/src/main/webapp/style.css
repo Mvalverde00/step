@@ -1,6 +1,14 @@
+body {
+  background-color: gray;
+}
+
 #content {
+  background-color: lightgray;
+  border-radius: 50px;
   margin-left: auto;
   margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
   width: 650px;
   text-align: center;
 }
@@ -45,6 +53,8 @@
 }
 
 .project-container {
+  border: 5px solid;
+  border-color: threedhighlight threedshadow threeddarkshadow threedhighlight;
   width: 45%;
 }
 
