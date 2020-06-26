@@ -4,7 +4,7 @@
  * to be used instead of Math.random(), allowing for a controlled random number
  * generator
 */
-class MockRNG {
+class FakeRNG {
   constructor(initialValue = 0) {
     this.setReturn(initialValue);
   }
@@ -18,4 +18,4 @@ class MockRNG {
   }
 }
 
-module.exports = MockRNG;
+module.exports = FakeRNG;

@@ -1,5 +1,5 @@
-const MockRNG = require('./mocks/mock_rng.js');
-const shuffle = require('../main/webapp/quiz.js');
+const FakeRNG = require('./fake_rng.js');
+const shuffle = require('../../main/webapp/quiz.js');
 
 test('Shuffle on empty array', () => {
   let arr = [];
@@ -8,10 +8,10 @@ test('Shuffle on empty array', () => {
 
 test('Shuffle on small array', () => {
   let arr = [1,2,3];
-  expect(shuffle(arr, new MockRNG(0))).toEqual([1,2,3]);
+  expect(shuffle(arr, new FakeRNG(0))).toEqual([1,2,3]);
 
   arr = [1,2,3];
-  expect(shuffle(arr, new MockRNG(0.99))).toEqual([3,1,2]);
+  expect(shuffle(arr, new FakeRNG(0.99))).toEqual([3,1,2]);
 });
 
 // Helper function for testing conservation of elements
