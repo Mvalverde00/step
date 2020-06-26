@@ -22,7 +22,7 @@ function countArrayElements(arr) {
     if (arr[i] in count) {
       count[arr[i]]++;
     } else {
-      count[arr[i]] = 0;
+      count[arr[i]] = 1;
     }
   }
 
