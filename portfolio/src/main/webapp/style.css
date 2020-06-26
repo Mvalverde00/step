@@ -2,8 +2,58 @@
   margin-left: auto;
   margin-right: auto;
   width: 650px;
+  text-align: center;
 }
 
-#greeting-container {
+#footer {
+  font-size: .7em;
+  text-align: center;
+  padding-top: 5px;
+}
+
+#trivia-container {
   margin-top: 20px;
+  font-style: italic;
+}
+
+#trivia-feedback {
+  display: inline;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#biscuit-container {
+  height: 200px;
+}
+
+#biscuit-p {
+  height: 100%;
+  float: left;
+  text-align: left;
+}
+
+#biscuit-img {
+  height: 100%;
+  float: right;
+  padding-left: 10px;
+}
+
+#projects {
+  width: 100%;
+  height: auto;
+  overflow: auto;
+}
+
+.project-container {
+  width: 45%;
+}
+
+.project-img {
+  width: 90%;
+  padding-left: 15px;
+}
+
+.thumbnail-16 {
+  width: 16px;
+  height: 16px;
 }

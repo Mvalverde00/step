@@ -2,17 +2,89 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
+    <title>Michael's Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+      <h1>Michael's Portfolio</h1>
+      <p>
+        Hi! I'm Michael Valverde, a rising sophomore at the California Institute of Technology.
+        I hope to one day be a professional graphics programmer in the VR space.
+        On this page you can read a little bit about myself, as well as some interesting projects I've worked on in the past.
+      </p>
+
+
+      <h2>Background - About Me</h2>
+      <p>
+        I was born and raised in Bayonne, New Jersey on December 6th, 2000.  For as long as I can remember,
+        I have always loved games of all sorts- board games, puzzle games, word games, and yes- video games.
+        This love of games, especially video games, is what ultimately drove me to want to become a computer scientist- I want to enable others to experience
+        the same magic I did when I first discovered video games. This is why I am especially interested in Virtual Reality (VR), which I view as the frontier
+        of game development, with limitless possibilities for immersion and wonder just waiting to be invented.
+      </p>
+
+      <div id="biscuit-container">
+        <p id="biscuit-p">
+          <img id="biscuit-img" src="/images/biscuit.jpeg" alt="Biscuit taking a nap on the couch.">
+          I also have an amazing dog named Biscuit who joined my family in 2008. He is definitely part yorkie-terrier, but his (relatively) large size leads us
+          to believe that he is a mix with another dog breed, although we are unsure as to what this mystery breed might be. Although he likes to act tough, he
+          is quite the coward and will run at the first sign of trouble. Here's a picture of him sleeping.
+        </p>
+      </div>
+
+
+      <h2>Previous Projects</h2>
+      <p>
+        I've worked on what I like to think are some pretty cool projects over the past few years. Here are some of the highlights.
+        Click on a project to learn more about it. For a full list of projects, be sure to check out my <a href="https://github.com/Mvalverde00">Github</a>.
+      </p>
+      <div id="projects">
+        <div style="float:left" class="project-container">
+          <h3>DLD Dino Game</h3>
+          <a href="https://github.com/Mvalverde00/DLD-Dino"><img class="project-img" src="images/dino.jpg"></a>
+          <p>
+            In this project, I teamed with two others to make a hardware based version (using only logic gates, multiplexors, 555 timers, and a healthy amount of shift registers)
+            of the google chrome dinosaur game (chrome://dino on a chrome browser).
+          </p>
+        </div>
+
+        <div style="float:right" class="project-container">
+          <h3>Collaborative Drawing App</h3>
+          <a href="https://github.com/Mvalverde00/DrawingApp"><img class="project-img" src="images/drawing-app.png"></a>
+          <p>
+            In this project I made a room-based collaborative online whiteboard for me and my friends to use. Anyone could connect to the site and then either create a new room and
+            invite their friends to it or join an existing room. The rooms are fully-persistent and can be either public or password-protected. The backend for this site was done
+            in the Python framework Flask.
+          </p>
+        </div>
+
+      </div>
+
+
+      <h2>Trivia</h2>
+      <p>Click here to learn a random fact about me: <button onclick="addRandomTrivia()">Click me!</button></p>
+      <div id="trivia-container"></div>
+
+
+      <h2>Let's play a game</h2>
+      <p>
+        Thanks for taking the time to read through this site and getting to know me a little better. Let's see how much you recall! <a href="/quiz.html">Click here</a> to take a quick quiz
+        based on some of the things you just learned about me.
+      </p>
+
+
+      <div id="footer">
+        <hr/>
+        <a href="https://www.linkedin.com/in/michael-valverde-39b8b3150">
+          Connect with me on LinkedIn <img class="thumbnail-16" src="/images/linkedin-logo.png" alt=""/>
+        </a> |
+        <a href="https://github.com/Mvalverde00">
+          Connect with me on GitHub <img class="thumbnail-16" src="/images/github-logo.png" alt=""/>
+        </a>
+      </div>
+
     </div>
   </body>
 </html>
