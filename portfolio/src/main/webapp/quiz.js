@@ -41,7 +41,7 @@ class QuizQuestion {
      */
     this.choices = choices;
 
-    /** @type {int} The index of the choice in choices that is correct*/
+    /** @type {int} The index of the choice in choices that is correct */
     this.answerIndex = answerIndex;
   }
 };
@@ -53,7 +53,7 @@ class QuizQuestion {
  */
 class Quiz {
   constructor(quizQuestions, divID, feedbackDivID) {
-    /** @type {List<QuizQuestion>} The Quiz Questions to be asked*/
+    /** @type {List<QuizQuestion>} The Quiz Questions to be asked */
     this.quizQuestions = shuffle(quizQuestions);
 
     this.currQuizQuestion = 0;
@@ -70,13 +70,13 @@ class Quiz {
      */
     this.feedbackContainer = document.getElementById(feedbackDivID);
 
-    /** @type {string} The value of the radio inputs' name field*/
+    /** @type {string} The value of the radio inputs' name field */
     this.radioName = 'question';
 
     this.correctColor = '#00ff00';
     this.incorrectColor = '#ff0000';
     this.warningColor = '#ffff00';
-    }
+  }
 
   getNextQuizQuestion() {
     if (this.currQuizQuestion >= this.quizQuestions.length) {
@@ -154,7 +154,7 @@ class Quiz {
   }
 
   presentGameOverStats(){
-    this.container.innerHTML = "";
+    this.container.innerHTML = '';
 
     this.container.insertAdjacentHTML('beforeend',
         `<p>
