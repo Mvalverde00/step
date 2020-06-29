@@ -37,3 +37,23 @@ function addRandomTrivia() {
     'My middle name is McAlarney',
   ], 'trivia-container');
 }
+
+function displayComments() {
+  fetch('/data')
+      .then(response => response.json())
+      .then(commentTexts => {
+        let container = document.getElementById('comment-container');
+        container.innerHTML = '';
+        for (let text of commentTexts) {
+          const comment = createComment(text);
+          container.appendChild(comment);
+        }
+      });
+}
+
+function createComment(text) {
+  let comment = document.createElement('p');
+  comment.innerText = text;
+  return comment;
+
+}
