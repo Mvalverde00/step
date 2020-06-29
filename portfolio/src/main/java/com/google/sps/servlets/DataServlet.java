@@ -21,18 +21,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import com.google.gson.Gson;
-
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.sps.data.Comment;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
   private ArrayList<String> comments;
   Gson gson;
+  DatastoreService ds;
 
   @Override
   public void init() {
     comments = new ArrayList<>();
     gson = new Gson();
+    ds = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Override
@@ -47,10 +52,23 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String newComment = request.getParameter("comment");
     if (newComment != null && newComment != "") {
-      comments.add(newComment);
+      // The idea of parent and score will be fleshed out later.
+      Entity commentEntity = createComment(newComment, 0, 0);
+
+      ds.put(commentEntity);
     }
 
     response.sendRedirect(request.getHeader("referer"));
+  }
+
+  private Entity createComment(String message, long parent, int score) {
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("message", message);
+    commentEntity.setProperty("date_posted", System.currentTimeMillis());
+    commentEntity.setProperty("parent", parent);
+    commentEntity.setProperty("score", score);
+
+    return commentEntity;
   }
 
 }
