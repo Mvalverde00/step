@@ -31,11 +31,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void init() {
-    comments = new ArrayList<>(3);
-    comments.add("Hello there, how are you doing?");
-    comments.add("Wow this website is so cool.");
-    comments.add("These comments definitely aren't scripted...");
-
+    comments = new ArrayList<>();
     gson = new Gson();
   }
 
@@ -45,6 +41,16 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String newComment = request.getParameter("comment");
+    if (newComment != null && newComment != "") {
+      comments.add(newComment);
+    }
+
+    response.sendRedirect(request.getHeader("referer"));
   }
 
 }
