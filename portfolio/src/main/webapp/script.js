@@ -37,3 +37,10 @@ function addRandomTrivia() {
     'My middle name is McAlarney',
   ], 'trivia-container');
 }
+
+function addFetchedData(containerId) {
+  const container = document.getElementById(containerId);
+  fetch('/data')
+      .then(response => response.text())
+      .then(text => {container.innerText = text});
+}
