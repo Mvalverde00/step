@@ -14,9 +14,9 @@
 
 
 // Fisher-Yates shuffle algorithm
-function shuffle(arr) {
+function shuffle(arr, rng=Math) {
   for (let i = 0; i < arr.length; i++) {
-    const index = i + Math.floor(Math.random() * (arr.length - i));
+    const index = i + Math.floor(rng.random() * (arr.length - i));
 
     const temp = arr[i];
     arr[i] = arr[index];
@@ -192,3 +192,5 @@ window.onload = () => {
   quiz.presentNextQuestion();
 
 }
+
+module.exports = shuffle;
