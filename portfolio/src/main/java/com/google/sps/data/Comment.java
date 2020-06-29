@@ -14,6 +14,8 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Entity;
+
 /**
  * A comment on a webpage
  * @param id An identifier which uniquely defines a comment
@@ -29,13 +31,30 @@ public final class Comment {
   private final String message;
   private final long date_posted;
   private final long parent;
-  private final int score;
+  private final long score;
 
-  public Comment(long id, String message, long date_posted, long parent, int score) {
+  public Comment(long id, String message, long date_posted, long parent, long score) {
     this.id = id;
     this.message = message;
     this.date_posted = date_posted;
     this.parent = parent;
     this.score = score;
   }
+
+  public Comment(Entity e) {
+    this(e.getKey().getId(), (String) e.getProperty("message"),
+        (long) e.getProperty("date_posted"), (long) e.getProperty("parent"),
+        (long) e.getProperty("score"));
+  }
+
+  public static Entity createComment(String message, long parent, long score) {
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("message", message);
+    commentEntity.setProperty("date_posted", System.currentTimeMillis());
+    commentEntity.setProperty("parent", parent);
+    commentEntity.setProperty("score", score);
+
+    return commentEntity;
+  }
+
 }

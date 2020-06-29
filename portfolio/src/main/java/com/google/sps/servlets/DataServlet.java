@@ -14,17 +14,22 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
+import com.google.sps.data.Comment;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import com.google.gson.Gson;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.sps.data.Comment;
+import java.util.List;
+
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
@@ -42,10 +47,16 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String json = gson.toJson(comments);
+    Query query = new Query("Comment").addSort("date_posted", SortDirection.DESCENDING);
+    PreparedQuery results = ds.prepare(query);
+
+    List<Comment> comments = new ArrayList<>();
+    for (Entity e : results.asIterable()) {
+      comments.add(new Comment(e));
+    }
 
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(comments));
   }
 
   @Override
@@ -53,22 +64,12 @@ public class DataServlet extends HttpServlet {
     String newComment = request.getParameter("comment");
     if (newComment != null && newComment != "") {
       // The idea of parent and score will be fleshed out later.
-      Entity commentEntity = createComment(newComment, 0, 0);
+      Entity commentEntity = Comment.createComment(newComment, 0, 0);
 
       ds.put(commentEntity);
     }
 
     response.sendRedirect(request.getHeader("referer"));
-  }
-
-  private Entity createComment(String message, long parent, int score) {
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("message", message);
-    commentEntity.setProperty("date_posted", System.currentTimeMillis());
-    commentEntity.setProperty("parent", parent);
-    commentEntity.setProperty("score", score);
-
-    return commentEntity;
   }
 
 }

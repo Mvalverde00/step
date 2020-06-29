@@ -41,17 +41,17 @@ function addRandomTrivia() {
 function displayComments() {
   fetch('/data')
       .then(response => response.json())
-      .then(commentTexts => {
+      .then(comments => {
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
-        for (let text of commentTexts) {
-          const comment = createComment(text);
-          container.appendChild(comment);
+        for (let comment of comments) {
+          const commentParagraph = createCommentParagraph(comment.message);
+          container.appendChild(commentParagraph);
         }
       });
 }
 
-function createComment(text) {
+function createCommentParagraph(text) {
   let comment = document.createElement('p');
   comment.innerText = text;
   return comment;
