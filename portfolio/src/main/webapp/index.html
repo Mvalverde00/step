@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="displayComments()">
     <div id="content">
       <h1>Michael's Portfolio</h1>
       <img src="images/me.jpeg" alt="A picture of me in a suit, taken senior year of high school.">
@@ -75,9 +75,8 @@
         based on some of the things you just learned about me.
       </p>
 
-      <h2>Fetching data from Server</h2>
-      <p id="fetch-container"></p>
-      <button onclick="addFetchedData('fetch-container')">Click me to fetch data from the server!</button>
+      <h2>Comments</h2>
+      <div id="comment-container"></div>
 
 
       <div id="footer">
