@@ -57,3 +57,7 @@ function createCommentParagraph(text) {
   return comment;
 
 }
+
+function deleteAllComments() {
+  fetch('/delete-data', {method:'post'}).then(() => displayComments());
+}
