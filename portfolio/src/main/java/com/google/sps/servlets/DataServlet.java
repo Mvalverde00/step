@@ -42,7 +42,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("date_posted", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("datePosted", SortDirection.DESCENDING);
     PreparedQuery results = ds.prepare(query);
 
     List<Comment> comments = new ArrayList<>();
@@ -57,10 +57,9 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String newComment = request.getParameter("comment");
-    if (newComment != null && newComment != "") {
-      // The idea of parent and score will be fleshed out later.
+    if (newComment != null && !newComment.isEmpty()) {
+      // TODO: Pass in actual values for parent and score.
       Entity commentEntity = Comment.createComment(newComment, 0, 0);
-
       ds.put(commentEntity);
     }
 
