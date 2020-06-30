@@ -23,27 +23,22 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> comments;
-  Gson gson;
-  DatastoreService ds;
-
-  @Override
-  public void init() {
-    comments = new ArrayList<>();
-    gson = new Gson();
-    ds = DatastoreServiceFactory.getDatastoreService();
-  }
+  private static final Gson gson = new Gson();
+  private static final String host = "michael-leoyao-step-2020.appspot.com";
+  private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -69,7 +64,24 @@ public class DataServlet extends HttpServlet {
       ds.put(commentEntity);
     }
 
-    response.sendRedirect(request.getHeader("referer"));
+    response.sendRedirect(getRedirect(request));
+  }
+
+  private String getRedirect(HttpServletRequest request) {
+    String referer = request.getHeader("referer");
+    String referer_host;
+
+    // It's possible the user manually set a referer that is not a valid URI
+    try {
+      referer_host = new URI(referer).getHost();
+    } catch (URISyntaxException e) {
+      referer_host = "";
+    }
+
+    if (!referer_host.equals(host)) {
+      return host;
+    }
+    return referer;
   }
 
 }
