@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -49,25 +48,25 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String newComment = request.getParameter("comment");
-    if (newComment != null && newComment != "") {
+    if (newComment != null && !newComment.isEmpty()) {
       comments.add(newComment);
     }
 
-  response.sendRedirect(getRedirect(request));
+    response.sendRedirect(getRedirect(request));
   }
 
   private String getRedirect(HttpServletRequest request) {
     String referer = request.getHeader("referer");
-    String referer_host;
+    String refererHost;
 
     // It's possible the user manually set a referer that is not a valid URI
     try {
-      referer_host = new URI(referer).getHost();
+      refererHost = new URI(referer).getHost();
     } catch (URISyntaxException e) {
-      referer_host = "";
+      refererHost = "";
     }
 
-    if (!referer_host.equals(host)) {
+    if (!refererHost.equals(host)) {
       return host;
     }
     return referer;
