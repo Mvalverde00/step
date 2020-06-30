@@ -38,8 +38,9 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Gson gson = new Gson();
-  private static final String host = "localhost";
+  private static final String host = "michael-leoyao-step-2020.appspot.com";
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+  private static final int DEFAULT_RECORDS_SHOWN = 15;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -87,21 +88,19 @@ public class DataServlet extends HttpServlet {
   }
 
   private int getRecordsToReturn(HttpServletRequest request) {
-    final int DEFAULT_RETURN = 15;
-
     String recordsString = request.getParameter("records");
 
     int records;
     try {
       records = Integer.parseInt(recordsString);
     } catch (NumberFormatException e) {
-      System.err.println("Could not convert recordsString to int.");
-      return DEFAULT_RETURN;
+      System.err.println("Could not convert '" + recordsString + "' to int.");
+      return DEFAULT_RECORDS_SHOWN;
     }
 
     if (records < 1 || records > 100) {
       System.err.println("The request number of records is out of range.");
-      return DEFAULT_RETURN;
+      return DEFAULT_RECORDS_SHOWN;
     }
 
     return records;
