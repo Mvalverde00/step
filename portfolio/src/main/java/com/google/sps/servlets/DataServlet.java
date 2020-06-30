@@ -14,20 +14,21 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import com.google.gson.Gson;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> comments;
-  Gson gson;
+  private List<String> comments;
+  private static final Gson gson = new Gson();
 
   @Override
   public void init() {
@@ -35,8 +36,6 @@ public class DataServlet extends HttpServlet {
     comments.add("Hello there, how are you doing?");
     comments.add("Wow this website is so cool.");
     comments.add("These comments definitely aren't scripted...");
-
-    gson = new Gson();
   }
 
   @Override
