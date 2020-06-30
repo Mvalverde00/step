@@ -55,5 +55,4 @@ function createCommentParagraph(text) {
   let comment = document.createElement('p');
   comment.innerText = text;
   return comment;
-
 }
