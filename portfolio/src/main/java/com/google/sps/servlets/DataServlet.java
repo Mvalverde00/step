@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -29,6 +31,7 @@ public class DataServlet extends HttpServlet {
 
   private List<String> comments;
   private static final Gson gson = new Gson();
+  private static final String host = "michael-leoyao-step-2020.appspot.com";
 
   @Override
   public void init() {
@@ -50,7 +53,23 @@ public class DataServlet extends HttpServlet {
       comments.add(newComment);
     }
 
-    response.sendRedirect(request.getHeader("referer"));
+  response.sendRedirect(getRedirect(request));
   }
 
+  private String getRedirect(HttpServletRequest request) {
+    String referer = request.getHeader("referer");
+    String referer_host;
+
+    // It's possible the user manually set a referer that is not a valid URI
+    try {
+      referer_host = new URI(referer).getHost();
+    } catch (URISyntaxException e) {
+      referer_host = "";
+    }
+
+    if (!referer_host.equals(host)) {
+      return host;
+    }
+    return referer;
+  }
 }
