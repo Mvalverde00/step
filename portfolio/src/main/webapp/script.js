@@ -46,16 +46,42 @@ function displayComments() {
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
         for (let comment of comments) {
-          const commentParagraph = createCommentParagraph(comment.message);
-          container.appendChild(commentParagraph);
+          const commentElement = createCommentElement(comment);
+          container.appendChild(commentElement);
         }
       });
 }
 
-function createCommentParagraph(text) {
-  let comment = document.createElement('p');
-  comment.innerText = text;
+function createCommentElement(commentJson) {
+  let comment = document.createElement('div');
+  comment.setAttribute('id', commentJson.id);
+
+  let paragraph = document.createElement('p');
+  paragraph.innerText = commentJson.message;
+  comment.appendChild(paragraph);
+
+  let replySpan = document.createElement('span');
+  replySpan.innerText = 'Reply';
+  replySpan.onclick = () => {
+    replySpan.insertAdjacentHTML('beforebegin', createReplyForm(commentJson));
+    comment.removeChild(replySpan);
+  };
+  comment.appendChild(replySpan);
+
   return comment;
+}
+
+function createReplyForm(commentJson) {
+  return `
+      <form action="/data" method="POST">
+        <label for="comment">Enter comment:</label>
+        <input name="comment" type="text"/>
+
+        <input type="hidden" name="parent" value="${commentJson.message}"/>
+
+        <input type="submit" value="Send Comment!"/>
+      </form>
+      `;
 }
 
 function deleteAllComments() {
