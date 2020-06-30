@@ -66,6 +66,14 @@ public class DataServlet extends HttpServlet {
       refererHost = "";
     }
 
+    /**
+     * Allow handling of comments sections on multiple pages.  For example, a
+     * request made from www.example.com and www.example.com/page2.html will
+     * both have www.example.com as their refererHost, but the referers will
+     * point to different pages (namely `/` vs `/page2.html` ).
+     * If refererHost does not equal host, that means some external tool
+     * tried to set referer, so in that case we return the home page.
+     */
     if (!refererHost.equals(host)) {
       return host;
     }
