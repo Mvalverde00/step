@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -37,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Gson gson = new Gson();
-  private static final String host = "michael-leoyao-step-2020.appspot.com";
+  private static final String host = "localhost";
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
   @Override
@@ -45,8 +46,9 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("date_posted", SortDirection.DESCENDING);
     PreparedQuery results = ds.prepare(query);
 
+    int recordsToReturn = getRecordsToReturn(request);
     List<Comment> comments = new ArrayList<>();
-    for (Entity e : results.asIterable()) {
+    for (Entity e : results.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
       comments.add(new Comment(e));
     }
 
@@ -82,6 +84,27 @@ public class DataServlet extends HttpServlet {
       return host;
     }
     return referer;
+  }
+
+  private int getRecordsToReturn(HttpServletRequest request) {
+    final int DEFAULT_RETURN = 15;
+
+    String recordsString = request.getParameter("records");
+
+    int records;
+    try {
+      records = Integer.parseInt(recordsString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert recordsString to int.");
+      return DEFAULT_RETURN;
+    }
+
+    if (records < 1 || records > 100) {
+      System.err.println("The request number of records is out of range.");
+      return DEFAULT_RETURN;
+    }
+
+    return records;
   }
 
 }
