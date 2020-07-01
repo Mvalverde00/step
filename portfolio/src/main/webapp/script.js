@@ -87,3 +87,19 @@ function createReplyForm(commentJson) {
 function deleteAllComments() {
   fetch('/delete-data', {method:'post'}).then(() => displayComments());
 }
+
+function buildCommentTree(commentJsons) {
+  let root = new TreeNode({"id":0});
+  buildCommentTreeHelper(root, commentJsons);
+  return root;
+}
+
+function buildCommentTreeHelper(parentNode, commentJsons) {
+  for (let commentJson of commentJsons) {
+    if (parentNode.data.id == commentJson.parent) {
+      let childNode = new TreeNode(commentJson);
+      buildCommentTreeHelper(childNode, commentJsons);
+      parentNode.appendChild(childNode);
+    }
+  }
+}
