@@ -69,10 +69,12 @@ function createCommentElement(commentJson) {
 
   let paragraph = document.createElement('p');
   paragraph.innerText = commentJson.message;
+  paragraph.classList.add('comment-p');
   comment.appendChild(paragraph);
 
   let replySpan = document.createElement('span');
   replySpan.innerText = 'Reply';
+  replySpan.classList.add('comment-reply-span')
   replySpan.onclick = () => {
     replySpan.insertAdjacentHTML('beforebegin', createReplyForm(commentJson));
     comment.removeChild(replySpan);

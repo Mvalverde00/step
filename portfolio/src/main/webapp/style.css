@@ -69,6 +69,18 @@ body {
 }
 
 .comment {
-  padding-left:25px;
-  text-align:left;
+  padding-left: 25px;
+  text-align: left;
+  background-color: threedface;
+  border-left: 7px solid threedshadow;
+  
+}
+
+.comment-reply-span {
+  font-size: .7em;
+  color: blue;
+}
+
+.comment-p {
+  margin-bottom: 5px;
 }
