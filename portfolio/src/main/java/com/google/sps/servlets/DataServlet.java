@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -105,4 +104,38 @@ public class DataServlet extends HttpServlet {
     return records;
   }
 
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String newComment = request.getParameter("comment");
+    if (newComment != null && !newComment.isEmpty()) {
+      comments.add(newComment);
+    }
+
+    response.sendRedirect(getRedirect(request));
+  }
+
+  private String getRedirect(HttpServletRequest request) {
+    String referer = request.getHeader("referer");
+    String refererHost;
+
+    // It's possible the user manually set a referer that is not a valid URI
+    try {
+      refererHost = new URI(referer).getHost();
+    } catch (URISyntaxException e) {
+      refererHost = "";
+    }
+
+    /**
+     * Allow handling of comments sections on multiple pages.  For example, a
+     * request made from www.example.com and www.example.com/page2.html will
+     * both have www.example.com as their refererHost, but the referers will
+     * point to different pages (namely `/` vs `/page2.html` ).
+     * If refererHost does not equal host, that means some external tool
+     * tried to set referer, so in that case we return the home page.
+     */
+    if (!refererHost.equals(host)) {
+      return host;
+    }
+    return referer;
+  }
 }
