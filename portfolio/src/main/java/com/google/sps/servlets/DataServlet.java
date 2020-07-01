@@ -68,22 +68,6 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect(getRedirect(request));
   }
 
-  private String getRedirect(HttpServletRequest request) {
-    String referer = request.getHeader("referer");
-    String referer_host;
-
-    // It's possible the user manually set a referer that is not a valid URI
-    try {
-      referer_host = new URI(referer).getHost();
-    } catch (URISyntaxException e) {
-      referer_host = "";
-    }
-
-    if (!referer_host.equals(host)) {
-      return host;
-    }
-    return referer;
-  }
 
   private int getRecordsToReturn(HttpServletRequest request) {
     String recordsString = request.getParameter("records");
@@ -102,16 +86,6 @@ public class DataServlet extends HttpServlet {
     }
 
     return records;
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String newComment = request.getParameter("comment");
-    if (newComment != null && !newComment.isEmpty()) {
-      comments.add(newComment);
-    }
-
-    response.sendRedirect(getRedirect(request));
   }
 
   private String getRedirect(HttpServletRequest request) {
