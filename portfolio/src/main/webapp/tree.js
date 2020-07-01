@@ -4,7 +4,7 @@ class TreeNode {
     this.children = [];
   }
 
-  addChild(treeNode) {
+  appendChild(treeNode) {
     this.children.push(treeNode);
   }
 }

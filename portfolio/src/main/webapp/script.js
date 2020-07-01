@@ -42,19 +42,30 @@ function displayComments() {
   const records = document.getElementById("records").value;
   fetch(`/data?records=${records}`)
       .then(response => response.json())
-      .then(comments => {
+      .then(commentJsons => {
+        const commentTree = buildCommentTree(commentJsons);
+
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
-        for (let comment of comments) {
-          const commentElement = createCommentElement(comment);
-          container.appendChild(commentElement);
+
+        for (let commentNode of commentTree.children) {
+          displayCommentTree(commentNode, container);
         }
       });
+}
+
+function displayCommentTree(commentNode, parentElement) {
+  let commentElement = createCommentElement(commentNode.data);
+  parentElement.appendChild(commentElement);
+  for (let childNode of commentNode.children) {
+    displayCommentTree(childNode, commentElement);
+  }
 }
 
 function createCommentElement(commentJson) {
   let comment = document.createElement('div');
   comment.setAttribute('id', commentJson.id);
+  comment.classList.add('comment');
 
   let paragraph = document.createElement('p');
   paragraph.innerText = commentJson.message;
@@ -77,7 +88,7 @@ function createReplyForm(commentJson) {
         <label for="comment">Enter comment:</label>
         <input name="comment" type="text"/>
 
-        <input type="hidden" name="parent" value="${commentJson.message}"/>
+        <input type="hidden" name="parent" value="${commentJson.id}"/>
 
         <input type="submit" value="Send Comment!"/>
       </form>
