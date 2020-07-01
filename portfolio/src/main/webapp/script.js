@@ -39,20 +39,25 @@ function addRandomTrivia() {
 }
 
 function displayComments() {
-  fetch('/data')
+  const records = document.getElementById("records").value;
+  fetch(`/data?records=${records}`)
       .then(response => response.json())
-      .then(commentTexts => {
+      .then(comments => {
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
-        for (let text of commentTexts) {
-          const comment = createComment(text);
-          container.appendChild(comment);
+        for (let comment of comments) {
+          const commentParagraph = createCommentParagraph(comment.message);
+          container.appendChild(commentParagraph);
         }
       });
 }
 
-function createComment(text) {
+function createCommentParagraph(text) {
   let comment = document.createElement('p');
   comment.innerText = text;
   return comment;
+}
+
+function deleteAllComments() {
+  fetch('/delete-data', {method:'post'}).then(() => displayComments());
 }
