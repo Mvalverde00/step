@@ -67,14 +67,35 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String newComment = request.getParameter("comment");
-    if (newComment != null && !newComment.isEmpty()) {
+    String message = request.getParameter("comment");
+    long parent = getCommentParent(request);
+    if (message != null && !message.isEmpty()) {
       // TODO: Pass in actual values for parent and score.
-      Entity commentEntity = Comment.createComment(newComment, 0, 0);
+      Entity commentEntity = Comment.createComment(message, parent, 0);
       ds.put(commentEntity);
     }
 
     response.sendRedirect(getRedirect(request));
+  }
+
+  private long getCommentParent(HttpServletRequest request) {
+    String parentString = request.getParameter("parent");
+
+    long parent;
+    try {
+      parent = Long.parseLong(parentString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert '" + parentString + "' to long.");
+      // Make it a top-level comment if we can't parse the parent,
+      parent = 0;
+    }
+
+    if (parent < 0) {
+      System.err.println("Parent ID should not be negative!");
+      parent = 0;
+    }
+
+    return parent;
   }
 
 
