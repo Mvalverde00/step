@@ -39,7 +39,8 @@ function addRandomTrivia() {
 }
 
 function displayComments() {
-  fetch('/data')
+  const records = document.getElementById("records").value;
+  fetch(`/data?records=${records}`)
       .then(response => response.json())
       .then(comments => {
         let container = document.getElementById('comment-container');
@@ -55,4 +56,8 @@ function createCommentParagraph(text) {
   let comment = document.createElement('p');
   comment.innerText = text;
   return comment;
+}
+
+function deleteAllComments() {
+  fetch('/delete-data', {method:'post'}).then(() => displayComments());
 }

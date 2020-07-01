@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -39,14 +40,16 @@ public class DataServlet extends HttpServlet {
   private static final Gson gson = new Gson();
   private static final String host = "michael-leoyao-step-2020.appspot.com";
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+  private static final int DEFAULT_RECORDS_SHOWN = 15;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("datePosted", SortDirection.DESCENDING);
     PreparedQuery results = ds.prepare(query);
 
+    int recordsToReturn = getRecordsToReturn(request);
     List<Comment> comments = new ArrayList<>();
-    for (Entity e : results.asIterable()) {
+    for (Entity e : results.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
       comments.add(new Comment(e));
     }
 
@@ -81,6 +84,25 @@ public class DataServlet extends HttpServlet {
       return host;
     }
     return referer;
+  }
+
+  private int getRecordsToReturn(HttpServletRequest request) {
+    String recordsString = request.getParameter("records");
+
+    int records;
+    try {
+      records = Integer.parseInt(recordsString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert '" + recordsString + "' to int.");
+      return DEFAULT_RECORDS_SHOWN;
+    }
+
+    if (records < 1 || records > 100) {
+      System.err.println("The request number of records is out of range.");
+      return DEFAULT_RECORDS_SHOWN;
+    }
+
+    return records;
   }
 
 }
