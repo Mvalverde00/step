@@ -37,9 +37,18 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Gson gson = new Gson();
-  private static final String host = "michael-leoyao-step-2020.appspot.com";
+  private static final String host;
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
   private static final int DEFAULT_RECORDS_SHOWN = 15;
+
+  static {
+    String environmentHost = System.getenv("SERVER_HOST_NAME");
+    if (environmentHost == null) {
+      host = "michael-leoyao-step-2020.appspot.com";
+    } else {
+      host = environmentHost;
+    }
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
