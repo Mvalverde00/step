@@ -40,7 +40,8 @@ function addRandomTrivia() {
 
 function displayComments() {
   const records = document.getElementById('records').value;
-  fetch(`/data?records=${records}`)
+  const lan = document.getElementById('language-choice').value;
+  fetch(`/data?records=${records}&lan=${lan}`)
       .then(response => response.json())
       .then(commentJsons => {
         const commentTree = buildCommentTree(commentJsons);
