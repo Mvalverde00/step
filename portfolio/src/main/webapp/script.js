@@ -39,25 +39,82 @@ function addRandomTrivia() {
 }
 
 function displayComments() {
-  const records = document.getElementById("records").value;
+  const records = document.getElementById('records').value;
   fetch(`/data?records=${records}`)
       .then(response => response.json())
-      .then(comments => {
+      .then(commentJsons => {
+        const commentTree = buildCommentTree(commentJsons);
+
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
-        for (let comment of comments) {
-          const commentParagraph = createCommentParagraph(comment.message);
-          container.appendChild(commentParagraph);
+
+        for (let commentNode of commentTree.children) {
+          displayCommentTree(commentNode, container, commentNode.data.id);
         }
       });
 }
 
-function createCommentParagraph(text) {
-  let comment = document.createElement('p');
-  comment.innerText = text;
+function displayCommentTree(commentNode, parentElement, rootElementId) {
+  let commentElement = createCommentElement(commentNode.data, rootElementId);
+  parentElement.appendChild(commentElement);
+  for (let childNode of commentNode.children) {
+    displayCommentTree(childNode, commentElement, rootElementId);
+  }
+}
+
+function createCommentElement(commentJson, rootElementId) {
+  let comment = document.createElement('div');
+  comment.setAttribute('id', commentJson.id);
+  comment.classList.add('comment');
+
+  let paragraph = document.createElement('p');
+  paragraph.innerText = commentJson.message;
+  paragraph.classList.add('comment-p');
+  comment.appendChild(paragraph);
+
+  let replySpan = document.createElement('span');
+  replySpan.innerText = 'Reply';
+  replySpan.classList.add('comment-reply-span')
+  replySpan.onclick = () => {
+    replySpan.insertAdjacentHTML('beforebegin',
+        createReplyForm(commentJson, rootElementId));
+    comment.removeChild(replySpan);
+  };
+  comment.appendChild(replySpan);
+
   return comment;
+}
+
+function createReplyForm(commentJson, rootElementId) {
+  return `
+      <form action="/data" method="POST">
+        <label for="comment">Enter comment:</label>
+        <input name="comment" type="text"/>
+
+        <input type="hidden" name="parent" value="${commentJson.id}"/>
+        <input type="hidden" name="root" value="${rootElementId}"/>
+
+        <input type="submit" value="Send Comment!"/>
+      </form>
+      `;
 }
 
 function deleteAllComments() {
   fetch('/delete-data', {method:'post'}).then(() => displayComments());
+}
+
+function buildCommentTree(commentJsons) {
+  let root = new TreeNode({'id':0});
+  buildCommentTreeHelper(root, commentJsons);
+  return root;
+}
+
+function buildCommentTreeHelper(parentNode, commentJsons) {
+  for (let commentJson of commentJsons) {
+    if (parentNode.data.id == commentJson.parent) {
+      let childNode = new TreeNode(commentJson);
+      buildCommentTreeHelper(childNode, commentJsons);
+      parentNode.appendChild(childNode);
+    }
+  }
 }

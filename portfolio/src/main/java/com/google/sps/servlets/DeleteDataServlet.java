@@ -45,6 +45,9 @@ public class DeleteDataServlet extends HttpServlet {
     }
 
     ds.delete(keys);
+
+    response.setContentType("text/html");
+    response.setStatus(HttpServletResponse.SC_OK);
   }
 
 }

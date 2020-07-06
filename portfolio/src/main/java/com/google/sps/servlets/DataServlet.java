@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
@@ -37,19 +39,45 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Gson gson = new Gson();
-  private static final String host = "michael-leoyao-step-2020.appspot.com";
+  private static final String host;
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
   private static final int DEFAULT_RECORDS_SHOWN = 15;
 
+  static {
+    String environmentHost = System.getenv("SERVER_HOST_NAME");
+    if (environmentHost == null) {
+      host = "michael-leoyao-step-2020.appspot.com";
+    } else {
+      host = environmentHost;
+    }
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("datePosted", SortDirection.DESCENDING);
-    PreparedQuery results = ds.prepare(query);
+    List<Comment> comments = new ArrayList<>();
+
+    Query rootCommentQuery = new Query("Comment")
+        .setFilter(FilterOperator.EQUAL.of("parent",0))
+        .addSort("datePosted", SortDirection.DESCENDING);
+    PreparedQuery rootComments = ds.prepare(rootCommentQuery);
 
     int recordsToReturn = getRecordsToReturn(request);
-    List<Comment> comments = new ArrayList<>();
-    for (Entity e : results.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
-      comments.add(new Comment(e));
+    List<Long> rootCommentIds = new ArrayList<>();
+    for (Entity e : rootComments.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
+      Comment c = new Comment(e);
+      comments.add(c);
+      rootCommentIds.add(c.getId());
+    }
+
+    // Query with IN operator breaks if list is empty, so only run if nonempty
+    if (!rootCommentIds.isEmpty()) {
+      Query childCommentQuery = new Query("Comment")
+          .setFilter(new FilterPredicate("root", FilterOperator.IN, rootCommentIds))
+          .addSort("datePosted", SortDirection.DESCENDING);
+      PreparedQuery childComments = ds.prepare(childCommentQuery);
+      for (Entity e : childComments.asIterable()) {
+        comments.add(new Comment(e));
+      }
     }
 
     response.setContentType("application/json;");
@@ -58,31 +86,38 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String newComment = request.getParameter("comment");
-    if (newComment != null && !newComment.isEmpty()) {
-      // TODO: Pass in actual values for parent and score.
-      Entity commentEntity = Comment.createComment(newComment, 0, 0);
+    String message = request.getParameter("comment");
+    long parent = 0;
+    long root = 0;
+
+    try {
+      parent = getNonnegativeLong(request, "parent");
+      root = getNonnegativeLong(request, "root");
+    } catch(NumberFormatException | IndexOutOfBoundsException e) {
+      System.err.println(e);
+      response.setContentType("text/html;");
+      response.getWriter().println(
+          "<h1>An error has occured</h1>" +
+          "<p> Sorry, your last request resulted in an internal error.</p>");
+      return;
+    }
+    if (message != null && !message.isEmpty()) {
+      // TODO: Pass in actual values for score.
+      Entity commentEntity = Comment.createComment(message, parent, root, 0);
       ds.put(commentEntity);
     }
-
     response.sendRedirect(getRedirect(request));
   }
 
-  private String getRedirect(HttpServletRequest request) {
-    String referer = request.getHeader("referer");
-    String referer_host;
+  private long getNonnegativeLong(HttpServletRequest request, String parameterName) throws NumberFormatException, IndexOutOfBoundsException{
+    String parameterString = request.getParameter(parameterName);
 
-    // It's possible the user manually set a referer that is not a valid URI
-    try {
-      referer_host = new URI(referer).getHost();
-    } catch (URISyntaxException e) {
-      referer_host = "";
+    long parameter = Long.parseLong(parameterString);
+    if (parameter < 0) {
+      throw new IndexOutOfBoundsException(parameterName + " should not be negative!");
     }
 
-    if (!referer_host.equals(host)) {
-      return host;
-    }
-    return referer;
+    return parameter;
   }
 
   private int getRecordsToReturn(HttpServletRequest request) {
@@ -102,16 +137,6 @@ public class DataServlet extends HttpServlet {
     }
 
     return records;
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String newComment = request.getParameter("comment");
-    if (newComment != null && !newComment.isEmpty()) {
-      comments.add(newComment);
-    }
-
-    response.sendRedirect(getRedirect(request));
   }
 
   private String getRedirect(HttpServletRequest request) {
