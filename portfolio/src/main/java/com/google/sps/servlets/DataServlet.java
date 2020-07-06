@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
+import com.google.sps.servlets.UserAuthServlet;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -86,6 +87,12 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Make sure the user is logged in.
+    if (!UserAuthServlet.isLoggedIn()) {
+      UserAuthServlet.notLoggedInPage(response, "send a comment.", getRedirect(request));
+      return;
+    }
+
     String message = request.getParameter("comment");
     long parent = 0;
     long root = 0;
