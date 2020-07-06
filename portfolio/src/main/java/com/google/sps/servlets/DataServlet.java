@@ -55,6 +55,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<Comment> comments = new ArrayList<>();
+    String code = "en";
 
     Query rootCommentQuery = new Query("Comment")
         .setFilter(FilterOperator.EQUAL.of("parent",0))
@@ -64,7 +65,7 @@ public class DataServlet extends HttpServlet {
     int recordsToReturn = getRecordsToReturn(request);
     List<Long> rootCommentIds = new ArrayList<>();
     for (Entity e : rootComments.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
-      Comment c = new Comment(e);
+      Comment c = new Comment(e, (String) e.getProperty("message"), code);
       comments.add(c);
       rootCommentIds.add(c.getId());
     }
@@ -76,9 +77,10 @@ public class DataServlet extends HttpServlet {
           .addSort("datePosted", SortDirection.DESCENDING);
       PreparedQuery childComments = ds.prepare(childCommentQuery);
       for (Entity e : childComments.asIterable()) {
-        comments.add(new Comment(e));
+        comments.add(new Comment(e, (String) e.getProperty("message"), code));
       }
     }
+
 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));

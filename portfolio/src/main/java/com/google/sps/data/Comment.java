@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.servlets.TranslationServlet;
 
 /** A comment on a webpage */
 public final class Comment {
@@ -37,14 +38,26 @@ public final class Comment {
     this.score = score;
   }
 
-  public Comment(Entity e) {
+  public Comment(Entity e, String message) {
     this(
         e.getKey().getId(),
-        (String) e.getProperty("message"),
+        message,
         (long) e.getProperty("datePosted"),
         (long) e.getProperty("parent"),
         (long) e.getProperty("root"),
         (long) e.getProperty("score"));
+  }
+
+  public Comment(Entity e, String message, String code) {
+    this(
+        e,
+        TranslationServlet.translate(message, code));
+  }
+
+  public Comment(Entity e) {
+    this(
+        e,
+        (String) e.getProperty("message"));
   }
 
   public long getId() {
