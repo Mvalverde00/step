@@ -39,7 +39,7 @@ function addRandomTrivia() {
 }
 
 function displayComments() {
-  const records = document.getElementById("records").value;
+  const records = document.getElementById('records').value;
   fetch(`/data?records=${records}`)
       .then(response => response.json())
       .then(commentJsons => {
@@ -49,20 +49,20 @@ function displayComments() {
         container.innerHTML = '';
 
         for (let commentNode of commentTree.children) {
-          displayCommentTree(commentNode, container);
+          displayCommentTree(commentNode, container, commentNode.data.id);
         }
       });
 }
 
-function displayCommentTree(commentNode, parentElement) {
-  let commentElement = createCommentElement(commentNode.data);
+function displayCommentTree(commentNode, parentElement, rootElementId) {
+  let commentElement = createCommentElement(commentNode.data, rootElementId);
   parentElement.appendChild(commentElement);
   for (let childNode of commentNode.children) {
-    displayCommentTree(childNode, commentElement);
+    displayCommentTree(childNode, commentElement, rootElementId);
   }
 }
 
-function createCommentElement(commentJson) {
+function createCommentElement(commentJson, rootElementId) {
   let comment = document.createElement('div');
   comment.setAttribute('id', commentJson.id);
   comment.classList.add('comment');
@@ -76,7 +76,8 @@ function createCommentElement(commentJson) {
   replySpan.innerText = 'Reply';
   replySpan.classList.add('comment-reply-span')
   replySpan.onclick = () => {
-    replySpan.insertAdjacentHTML('beforebegin', createReplyForm(commentJson));
+    replySpan.insertAdjacentHTML('beforebegin',
+        createReplyForm(commentJson, rootElementId));
     comment.removeChild(replySpan);
   };
   comment.appendChild(replySpan);
@@ -84,13 +85,14 @@ function createCommentElement(commentJson) {
   return comment;
 }
 
-function createReplyForm(commentJson) {
+function createReplyForm(commentJson, rootElementId) {
   return `
       <form action="/data" method="POST">
         <label for="comment">Enter comment:</label>
         <input name="comment" type="text"/>
 
         <input type="hidden" name="parent" value="${commentJson.id}"/>
+        <input type="hidden" name="root" value="${rootElementId}"/>
 
         <input type="submit" value="Send Comment!"/>
       </form>
@@ -102,7 +104,7 @@ function deleteAllComments() {
 }
 
 function buildCommentTree(commentJsons) {
-  let root = new TreeNode({"id":0});
+  let root = new TreeNode({'id':0});
   buildCommentTreeHelper(root, commentJsons);
   return root;
 }
