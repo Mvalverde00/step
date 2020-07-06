@@ -67,6 +67,11 @@ function createCommentElement(commentJson, rootElementId) {
   comment.setAttribute('id', commentJson.id);
   comment.classList.add('comment');
 
+  let info = document.createElement('p');
+  info.innerText = commentJson.sender;
+  info.classList.add('comment-info');
+  comment.appendChild(info);
+
   let paragraph = document.createElement('p');
   paragraph.innerText = commentJson.message;
   paragraph.classList.add('comment-p');

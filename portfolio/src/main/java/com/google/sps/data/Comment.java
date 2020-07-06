@@ -27,14 +27,16 @@ public final class Comment {
   // The id of the top-level comment this comment belongs to.  0 for top comment
   private final long root;
   private final long score;
+  private final String sender;
 
-  public Comment(long id, String message, long datePosted, long parent, long root, long score) {
+  public Comment(long id, String message, long datePosted, long parent, long root, long score, String sender) {
     this.id = id;
     this.message = message;
     this.datePosted = datePosted;
     this.parent = parent;
     this.root = root;
     this.score = score;
+    this.sender = sender;
   }
 
   public Comment(Entity e) {
@@ -44,20 +46,22 @@ public final class Comment {
         (long) e.getProperty("datePosted"),
         (long) e.getProperty("parent"),
         (long) e.getProperty("root"),
-        (long) e.getProperty("score"));
+        (long) e.getProperty("score"),
+        (String) e.getProperty("sender"));
   }
 
   public long getId() {
     return this.id;
   }
 
-  public static Entity createComment(String message, long parent, long root, long score) {
+  public static Entity createComment(String message, long parent, long root, long score, String sender) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("datePosted", System.currentTimeMillis());
     commentEntity.setProperty("parent", parent);
     commentEntity.setProperty("root", root);
     commentEntity.setProperty("score", score);
+    commentEntity.setProperty("sender", sender);
 
     return commentEntity;
   }

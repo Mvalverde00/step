@@ -110,7 +110,8 @@ public class DataServlet extends HttpServlet {
     }
     if (message != null && !message.isEmpty()) {
       // TODO: Pass in actual values for score.
-      Entity commentEntity = Comment.createComment(message, parent, root, 0);
+      Entity commentEntity
+          = Comment.createComment(message, parent, root, 0, UserAuthServlet.getEmail());
       ds.put(commentEntity);
     }
     response.sendRedirect(getRedirect(request));

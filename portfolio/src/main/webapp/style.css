@@ -73,7 +73,7 @@ body {
   text-align: left;
   background-color: threedface;
   border-left: 7px solid threedshadow;
-  
+
 }
 
 .comment-reply-span {
@@ -83,4 +83,10 @@ body {
 
 .comment-p {
   margin-bottom: 5px;
+}
+
+.comment-info {
+  font-weight: bold;
+  font-size: .9em;
+  margin-botttom: 10px;
 }

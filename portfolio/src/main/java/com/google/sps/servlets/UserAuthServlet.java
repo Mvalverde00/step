@@ -47,4 +47,8 @@ public class UserAuthServlet extends HttpServlet {
     return userService.isUserLoggedIn();
   }
 
+  public static String getEmail() {
+    return userService.getCurrentUser().getEmail();
+  }
+
 }
