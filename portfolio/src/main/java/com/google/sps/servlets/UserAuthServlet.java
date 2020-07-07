@@ -38,8 +38,8 @@ public class UserAuthServlet extends HttpServlet {
     String loginUrl = loggedIn ? "" : userService.createLoginURL(redirectURL);
 
     response.getWriter().println('{' +
-        "\"loggedIn\": " + loggedIn + ',' +
-        "\"loginURL\": " + loginUrl + '}');
+        "\"loggedIn\":  " + loggedIn + "," +
+        "\"loginUrl\": \"" + loginUrl + "\"}");
   }
 
   public static void notLoggedInPage(HttpServletRequest request, HttpServletResponse response, String message) throws IOException {

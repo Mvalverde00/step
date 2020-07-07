@@ -48,21 +48,41 @@ function displayComments() {
         let container = document.getElementById('comment-container');
         container.innerHTML = '';
 
-        for (let commentNode of commentTree.children) {
-          displayCommentTree(commentNode, container, commentNode.data.id);
-        }
+        fetch('/auth')
+            .then(response => response.json())
+            .then(authJson => {
+              let submitForm = document.getElementById('comment-submit-form');
+              let loginP = document.getElementById('comment-submit-login');
+              loginP.innerHTML = `
+                  <p>
+                    You must be <a href="${authJson.loginUrl}"> logged in</a>
+                    to comment.
+                  </p>`;
+
+              if (authJson.loggedIn) {
+                showAndHide(submitForm, loginP);
+              } else {
+                showAndHide(loginP, submitForm);
+              }
+
+              for (let commentNode of commentTree.children) {
+                displayCommentTree(commentNode, container, commentNode.data.id,
+                    authJson);
+              }
+            });
       });
 }
 
-function displayCommentTree(commentNode, parentElement, rootElementId) {
-  let commentElement = createCommentElement(commentNode.data, rootElementId);
+function displayCommentTree(commentNode, parentElement, rootElementId, authJson) {
+  let commentElement =
+      createCommentElement(commentNode.data, rootElementId, authJson);
   parentElement.appendChild(commentElement);
   for (let childNode of commentNode.children) {
-    displayCommentTree(childNode, commentElement, rootElementId);
+    displayCommentTree(childNode, commentElement, rootElementId, authJson);
   }
 }
 
-function createCommentElement(commentJson, rootElementId) {
+function createCommentElement(commentJson, rootElementId, authJson) {
   let comment = document.createElement('div');
   comment.setAttribute('id', commentJson.id);
   comment.classList.add('comment');
@@ -82,7 +102,7 @@ function createCommentElement(commentJson, rootElementId) {
   replySpan.classList.add('comment-reply-span')
   replySpan.onclick = () => {
     replySpan.insertAdjacentHTML('beforebegin',
-        createReplyForm(commentJson, rootElementId));
+        createReplyForm(commentJson, rootElementId, authJson));
     comment.removeChild(replySpan);
   };
   comment.appendChild(replySpan);
@@ -90,17 +110,22 @@ function createCommentElement(commentJson, rootElementId) {
   return comment;
 }
 
-function createReplyForm(commentJson, rootElementId) {
+function createReplyForm(commentJson, rootElementId, authJson) {
+  if (authJson.loggedIn) {
+    return `
+        <form action="/data" method="POST">
+          <label for="comment">Enter comment:</label>
+          <input name="comment" type="text"/>
+
+          <input type="hidden" name="parent" value="${commentJson.id}"/>
+          <input type="hidden" name="root" value="${rootElementId}"/>
+
+          <input type="submit" value="Send Comment!"/>
+        </form>
+        `;
+  }
   return `
-      <form action="/data" method="POST">
-        <label for="comment">Enter comment:</label>
-        <input name="comment" type="text"/>
-
-        <input type="hidden" name="parent" value="${commentJson.id}"/>
-        <input type="hidden" name="root" value="${rootElementId}"/>
-
-        <input type="submit" value="Send Comment!"/>
-      </form>
+      <p>You must be <a href="${authJson.loginUrl}">logged in</a> to reply.</p>
       `;
 }
 
@@ -122,4 +147,9 @@ function buildCommentTreeHelper(parentNode, commentJsons) {
       parentNode.appendChild(childNode);
     }
   }
+}
+
+function showAndHide(elementOne, elementTwo) {
+  elementOne.classList.remove('hidden');
+  elementTwo.classList.add('hidden');
 }
