@@ -23,11 +23,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
 import com.google.sps.data.Comment;
+import com.google.sps.servlets.UserAuthServlet;
+import com.google.sps.util.ServletUtil;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -38,19 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private static final Gson gson = new Gson();
-  private static final String host;
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
   private static final int DEFAULT_RECORDS_SHOWN = 15;
-
-  static {
-    String environmentHost = System.getenv("SERVER_HOST_NAME");
-    if (environmentHost == null) {
-      host = "michael-leoyao-step-2020.appspot.com";
-    } else {
-      host = environmentHost;
-    }
-  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -81,14 +69,21 @@ public class DataServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(comments));
+    response.getWriter().println(ServletUtil.toJson(comments));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Make sure the user is logged in.
+    if (!UserAuthServlet.isLoggedIn()) {
+      UserAuthServlet.notLoggedInPage(request, response, "send a comment.");
+      return;
+    }
+
     String message = request.getParameter("comment");
     long parent = 0;
     long root = 0;
+    long score = 0; // TODO: populate this with real data somewhere
 
     try {
       parent = getNonnegativeLong(request, "parent");
@@ -102,11 +97,11 @@ public class DataServlet extends HttpServlet {
       return;
     }
     if (message != null && !message.isEmpty()) {
-      // TODO: Pass in actual values for score.
-      Entity commentEntity = Comment.createComment(message, parent, root, 0);
+      Entity commentEntity = Comment.createComment(
+          message, parent, root, score, UserAuthServlet.getEmail());
       ds.put(commentEntity);
     }
-    response.sendRedirect(getRedirect(request));
+    response.sendRedirect(ServletUtil.getRedirect(request));
   }
 
   private long getNonnegativeLong(HttpServletRequest request, String parameterName) throws NumberFormatException, IndexOutOfBoundsException{
@@ -139,28 +134,4 @@ public class DataServlet extends HttpServlet {
     return records;
   }
 
-  private String getRedirect(HttpServletRequest request) {
-    String referer = request.getHeader("referer");
-    String refererHost;
-
-    // It's possible the user manually set a referer that is not a valid URI
-    try {
-      refererHost = new URI(referer).getHost();
-    } catch (URISyntaxException e) {
-      refererHost = "";
-    }
-
-    /**
-     * Allow handling of comments sections on multiple pages.  For example, a
-     * request made from www.example.com and www.example.com/page2.html will
-     * both have www.example.com as their refererHost, but the referers will
-     * point to different pages (namely `/` vs `/page2.html` ).
-     * If refererHost does not equal host, that means some external tool
-     * tried to set referer, so in that case we return the home page.
-     */
-    if (!refererHost.equals(host)) {
-      return host;
-    }
-    return referer;
-  }
 }
