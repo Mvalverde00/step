@@ -16,13 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.util.ServletUtil;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that deletes all comment data */
+/** Servlet that handles user authentiction */
 @WebServlet("/auth")
 public class UserAuthServlet extends HttpServlet {
 
@@ -30,13 +31,22 @@ public class UserAuthServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    notLoggedInPage(response, "continue", "/");
+    response.setContentType("application/json");
+
+    boolean loggedIn = isLoggedIn();
+    String redirectURL  = ServletUtil.getRedirect(request);
+    String loginUrl = loggedIn ? "" : userService.createLoginURL(redirectURL);
+
+    response.getWriter().println('{' +
+        "\"loggedIn\": " + loggedIn + ',' +
+        "\"loginURL\": " + loginUrl + '}');
   }
 
-  public static void notLoggedInPage(HttpServletResponse response, String message, String redirectUrl) throws IOException {
+  public static void notLoggedInPage(HttpServletRequest request, HttpServletResponse response, String message) throws IOException {
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     response.setContentType("text/html;");
 
+    String redirectUrl = ServletUtil.getRedirect(request);
     String loginUrl = userService.createLoginURL(redirectUrl);
     response.getWriter().println(
         "<p> Sorry, you must be logged in to " + message +

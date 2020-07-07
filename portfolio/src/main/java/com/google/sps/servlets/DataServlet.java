@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import com.google.sps.servlets.UserAuthServlet;
+import com.google.sps.util.ServletUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,18 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Gson gson = new Gson();
-  private static final String host;
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
   private static final int DEFAULT_RECORDS_SHOWN = 15;
-
-  static {
-    String environmentHost = System.getenv("SERVER_HOST_NAME");
-    if (environmentHost == null) {
-      host = "michael-leoyao-step-2020.appspot.com";
-    } else {
-      host = environmentHost;
-    }
-  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -89,7 +80,7 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Make sure the user is logged in.
     if (!UserAuthServlet.isLoggedIn()) {
-      UserAuthServlet.notLoggedInPage(response, "send a comment.", getRedirect(request));
+      UserAuthServlet.notLoggedInPage(request, response, "send a comment.");
       return;
     }
 
@@ -114,7 +105,7 @@ public class DataServlet extends HttpServlet {
           = Comment.createComment(message, parent, root, 0, UserAuthServlet.getEmail());
       ds.put(commentEntity);
     }
-    response.sendRedirect(getRedirect(request));
+    response.sendRedirect(ServletUtil.getRedirect(request));
   }
 
   private long getNonnegativeLong(HttpServletRequest request, String parameterName) throws NumberFormatException, IndexOutOfBoundsException{
@@ -147,28 +138,4 @@ public class DataServlet extends HttpServlet {
     return records;
   }
 
-  private String getRedirect(HttpServletRequest request) {
-    String referer = request.getHeader("referer");
-    String refererHost;
-
-    // It's possible the user manually set a referer that is not a valid URI
-    try {
-      refererHost = new URI(referer).getHost();
-    } catch (URISyntaxException e) {
-      refererHost = "";
-    }
-
-    /**
-     * Allow handling of comments sections on multiple pages.  For example, a
-     * request made from www.example.com and www.example.com/page2.html will
-     * both have www.example.com as their refererHost, but the referers will
-     * point to different pages (namely `/` vs `/page2.html` ).
-     * If refererHost does not equal host, that means some external tool
-     * tried to set referer, so in that case we return the home page.
-     */
-    if (!refererHost.equals(host)) {
-      return host;
-    }
-    return referer;
-  }
 }
