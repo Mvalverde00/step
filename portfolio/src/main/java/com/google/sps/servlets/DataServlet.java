@@ -23,13 +23,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import com.google.sps.servlets.UserAuthServlet;
 import com.google.sps.util.ServletUtil;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -40,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private static final Gson gson = new Gson();
   private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
   private static final int DEFAULT_RECORDS_SHOWN = 15;
 
@@ -73,7 +69,7 @@ public class DataServlet extends HttpServlet {
     }
 
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(comments));
+    response.getWriter().println(ServletUtil.toJson(comments));
   }
 
   @Override
@@ -87,6 +83,7 @@ public class DataServlet extends HttpServlet {
     String message = request.getParameter("comment");
     long parent = 0;
     long root = 0;
+    long score = 0; // TODO: populate this with real data somewhere
 
     try {
       parent = getNonnegativeLong(request, "parent");
@@ -100,9 +97,8 @@ public class DataServlet extends HttpServlet {
       return;
     }
     if (message != null && !message.isEmpty()) {
-      // TODO: Pass in actual values for score.
-      Entity commentEntity
-          = Comment.createComment(message, parent, root, 0, UserAuthServlet.getEmail());
+      Entity commentEntity = Comment.createComment(
+          message, parent, root, score, UserAuthServlet.getEmail());
       ds.put(commentEntity);
     }
     response.sendRedirect(ServletUtil.getRedirect(request));

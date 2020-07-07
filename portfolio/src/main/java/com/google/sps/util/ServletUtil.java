@@ -14,6 +14,7 @@
 
 package com.google.sps.util;
 
+import com.google.gson.Gson;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class ServletUtil {
 
   private static final String host;
+  private static final Gson gson = new Gson();
 
   static {
     String environmentHost = System.getenv("SERVER_HOST_NAME");
@@ -57,6 +59,10 @@ public final class ServletUtil {
       return host;
     }
     return referer;
+  }
+
+  public static String toJson(Object obj) {
+    return gson.toJson(obj);
   }
 
 }

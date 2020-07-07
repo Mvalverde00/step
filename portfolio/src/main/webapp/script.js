@@ -66,8 +66,8 @@ function displayComments() {
               }
 
               for (let commentNode of commentTree.children) {
-                displayCommentTree(commentNode, container, commentNode.data.id,
-                    authJson);
+                displayCommentTree(
+                    commentNode, container, commentNode.data.id, authJson);
               }
             });
       });
@@ -149,7 +149,7 @@ function buildCommentTreeHelper(parentNode, commentJsons) {
   }
 }
 
-function showAndHide(elementOne, elementTwo) {
-  elementOne.classList.remove('hidden');
-  elementTwo.classList.add('hidden');
+function showAndHide(elementToShow, elementToHide) {
+  elementToShow.classList.remove('hidden');
+  elementToHide.classList.add('hidden');
 }

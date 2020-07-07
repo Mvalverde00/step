@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.data.UserAuthResponse;
 import com.google.sps.util.ServletUtil;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -37,9 +38,9 @@ public class UserAuthServlet extends HttpServlet {
     String redirectURL  = ServletUtil.getRedirect(request);
     String loginUrl = loggedIn ? "" : userService.createLoginURL(redirectURL);
 
-    response.getWriter().println('{' +
-        "\"loggedIn\":  " + loggedIn + "," +
-        "\"loginUrl\": \"" + loginUrl + "\"}");
+    UserAuthResponse UAResponse = new UserAuthResponse(loggedIn, loginUrl);
+
+    response.getWriter().println(ServletUtil.toJson(UAResponse));
   }
 
   public static void notLoggedInPage(HttpServletRequest request, HttpServletResponse response, String message) throws IOException {
