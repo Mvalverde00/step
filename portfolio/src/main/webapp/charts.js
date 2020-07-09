@@ -21,12 +21,17 @@ function drawChart() {
         data.sort([{column: 0}]);
 
         const options = {
-          'title': 'Bigfoot Sightings',
-          'width':600,
-          'height':500
+          'title': 'Comment Posting over Time',
+          'width': 500,
+          'height': 400,
+          'hAxis': {
+            'viewWindow': {
+              'min': [0, 0, 0],
+              'max': [23, 59, 59]},
+          }
         };
 
-        const chart = new google.visualization.BarChart(
+        const chart = new google.visualization.ColumnChart(
             document.getElementById('frequency-over-time-chart-container'));
         chart.draw(data, options);
 
