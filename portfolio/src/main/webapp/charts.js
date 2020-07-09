@@ -1,9 +1,9 @@
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
-/** Fetches bigfoot sightings data and uses it to create a chart. */
+/** Fetches comments and uses data to build and display charts */
 function drawChart() {
-  fetch('/data?records=999999')
+  fetch('/data?records=100')
       .then(response => response.json())
       .then(commentJsons => {
         const times = commentJsons.map(x => unixToNearestHalfHour(x.datePosted));
@@ -52,6 +52,7 @@ function halfHourToTOD(nearestHalfHour) {
   // Make a new Date so we can get it in local timezone
   const date = new Date(nearestHalfHour * 3600 * 1000);
 
+  // Account for daylight savings time.
   const now = new Date();
   date.setMinutes(date.getMinutes() + date.getTimezoneOffset() - now.getTimezoneOffset());
 
