@@ -1,0 +1,14 @@
+indexes:
+
+- kind: Comment
+  properties:
+    - name: parent
+    - name: datePosted
+      direction: desc
+
+- kind: Comment
+  properties:
+    - name: root
+    - name: datePosted
+      direction: desc
+      
