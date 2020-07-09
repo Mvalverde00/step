@@ -15,16 +15,18 @@
 package com.google.sps.data;
 
 
-/** A response to a user auth request */
-public final class UserAuthResponse {
+/** A user of the website */
+public final class UserInfo {
 
-  private final boolean loggedIn;
-  private final String loginUrl;
+  private final long id;
+  private final String email;
   private final String username;
+  private final long joinDate;
 
-  public UserAuthResponse(boolean loggedIn, String loginUrl, String username) {
-    this.loggedIn = loggedIn;
-    this.loginUrl = loginUrl;
+  public UserInfo(long id, String email, String username, long joinDate) {
+    this.id = id;
+    this.email = email;
     this.username = username;
+    this.joinDate = joinDate;
   }
 }
