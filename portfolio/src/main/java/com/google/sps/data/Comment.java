@@ -71,7 +71,7 @@ public final class Comment {
     }
   }
 
-  public static Entity createComment(String message, long parent, long root, long score, Key poster) {
+  public static Entity createCommentEntity(String message, long parent, long root, long score, Key poster) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("datePosted", System.currentTimeMillis());

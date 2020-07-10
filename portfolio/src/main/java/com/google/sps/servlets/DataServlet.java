@@ -106,7 +106,7 @@ public class DataServlet extends HttpServlet {
       return;
     }
     if (message != null && !message.isEmpty()) {
-      Entity commentEntity = Comment.createComment(
+      Entity commentEntity = Comment.createCommentEntity(
           message, parent, root, score, UserAuthServlet.getUserEntity().getKey());
       ds.put(commentEntity);
     }
