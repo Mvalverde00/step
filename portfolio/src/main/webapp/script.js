@@ -76,6 +76,8 @@ function createCommentElement(commentJson, rootElementId, authJson) {
   comment.setAttribute('id', commentJson.id);
   comment.classList.add('comment');
 
+  comment.appendChild(createVoteDiv(commentJson));
+
   let info = document.createElement('p');
   info.innerText = commentJson.sender;
   info.classList.add('comment-info');
@@ -97,6 +99,18 @@ function createCommentElement(commentJson, rootElementId, authJson) {
   comment.appendChild(replySpan);
 
   return comment;
+}
+
+function createVoteDiv(commentJson) {
+  let voteDiv = document.createElement('div');
+  voteDiv.classList.add('comment-vote');
+
+  let scoreP = document.createElement('p');
+  scoreP.innerText = commentJson.score;
+
+  voteDiv.appendChild(scoreP);
+
+  return voteDiv;
 }
 
 function createReplyForm(commentJson, rootElementId, authJson) {

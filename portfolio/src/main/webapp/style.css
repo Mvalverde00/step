@@ -69,10 +69,16 @@ body {
 }
 
 .comment {
-  padding-left: 25px;
+  padding-left: 15px;
   text-align: left;
   background-color: threedface;
   border-left: 7px solid threedshadow;
+}
+
+.comment-vote {
+  width: 15px;
+  padding-right: 5px;
+  float: left;
 }
 
 .comment-reply-span {
