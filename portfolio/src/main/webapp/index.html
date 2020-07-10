@@ -84,17 +84,26 @@
         <input type="number" id="records" name="records" onchange="displayComments()" value="15", min="1", max="100"/>
       </form>
       <!--Only revealed for logged in users-->
-      <form id="comment-submit-form" class="hidden" action="/data" method="POST">
-        <label for="comment">Enter comment:</label>
-        <input name="comment" type="text"/>
-        <input type="hidden" name="parent" value="0"/>
-        <input type="hidden" name="root" value="0"/>
+      <div id="comment-submit-form-container">
+        <form class="hidden" action="/data" method="POST">
+          <label for="comment">Enter comment:</label>
+          <input name="comment" type="text"/>
+          <input type="hidden" name="parent" value="0"/>
+          <input type="hidden" name="root" value="0"/>
 
-        <input type="submit" value="Send Comment!"/>
-      </form>
+          <input type="submit" value="Send Comment!"/>
+        </form>
+        <a href="/profile">Change Username</a>
+        <a id="logout">Logout</a>
+      </div>
 
       <!--Only revealed for logged out users-->
       <p id="comment-submit-login" class="hidden"></p>
+
+      <!--Only revealed for logged in users without a nickname-->
+      <p id="comment-submit-username" class="hidden">
+        You must <a href="/profile">choose a username</a> to comment.
+      </p>
 
       <br/>
       <div id="comment-container"></div>

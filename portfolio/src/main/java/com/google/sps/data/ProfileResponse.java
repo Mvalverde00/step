@@ -15,18 +15,14 @@
 package com.google.sps.data;
 
 
-/** A response to a user auth request */
-public final class UserAuthResponse {
+/** A response to a Profile update/create request */
+public final class ProfileResponse {
 
-  private final boolean loggedIn;
-  private final String loginUrl;
-  private final String logoutUrl;
-  private final String username;
+  private final boolean success;
+  private final String message;
 
-  public UserAuthResponse(boolean loggedIn, String loginUrl, String logoutUrl, String username) {
-    this.loggedIn = loggedIn;
-    this.loginUrl = loginUrl;
-    this.logoutUrl = logoutUrl;
-    this.username = username;
+  public ProfileResponse(boolean success, String message) {
+    this.success = success;
+    this.message = message;
   }
 }

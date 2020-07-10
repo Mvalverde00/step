@@ -14,6 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.UserAuthResponse;
@@ -29,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserAuthServlet extends HttpServlet {
 
   private static final UserService userService = UserServiceFactory.getUserService();
+  private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -37,8 +46,11 @@ public class UserAuthServlet extends HttpServlet {
     boolean loggedIn = isLoggedIn();
     String redirectURL  = ServletUtil.getRedirect(request);
     String loginUrl = loggedIn ? "" : userService.createLoginURL(redirectURL);
+    String logoutUrl = loggedIn ? userService.createLogoutURL(redirectURL) : "";
+    String username = loggedIn ? getUsername() : "";
 
-    UserAuthResponse UAResponse = new UserAuthResponse(loggedIn, loginUrl);
+    UserAuthResponse UAResponse =
+        new UserAuthResponse(loggedIn, loginUrl, logoutUrl, username);
 
     response.getWriter().println(ServletUtil.toJson(UAResponse));
   }
@@ -62,4 +74,31 @@ public class UserAuthServlet extends HttpServlet {
     return userService.getCurrentUser().getEmail();
   }
 
+  public static String getId() {
+    return userService.getCurrentUser().getUserId();
+  }
+
+  public static Entity getUserEntity() {
+    Query query = new Query("UserInfo").setFilter(new FilterPredicate(
+        Entity.KEY_RESERVED_PROPERTY,
+        Query.FilterOperator.EQUAL,
+        KeyFactory.createKey("UserInfo", getId())));
+    PreparedQuery result = ds.prepare(query);
+
+    Entity userEntity = result.asSingleEntity();
+    return userEntity;
+  }
+
+  public static String getUsername() {
+    Entity userEntity = getUserEntity();
+    return getUsername(userEntity);
+  }
+
+  public static String getUsername(Entity userEntity) {
+    if (userEntity == null) {
+      return "";
+    }
+
+    return (String) userEntity.getProperty("username");
+  }
 }

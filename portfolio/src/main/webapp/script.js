@@ -51,19 +51,8 @@ function displayComments() {
         fetch('/auth')
             .then(response => response.json())
             .then(authJson => {
-              let submitForm = document.getElementById('comment-submit-form');
-              let loginP = document.getElementById('comment-submit-login');
-              loginP.innerHTML = `
-                  <p>
-                    You must be <a href="${authJson.loginUrl}"> logged in</a>
-                    to comment.
-                  </p>`;
 
-              if (authJson.loggedIn) {
-                showAndHide(submitForm, loginP);
-              } else {
-                showAndHide(loginP, submitForm);
-              }
+              displayPropertCommentField(authJson);
 
               for (let commentNode of commentTree.children) {
                 displayCommentTree(
@@ -111,22 +100,27 @@ function createCommentElement(commentJson, rootElementId, authJson) {
 }
 
 function createReplyForm(commentJson, rootElementId, authJson) {
-  if (authJson.loggedIn) {
+  if (!authJson.loggedIn) {
     return `
-        <form action="/data" method="POST">
-          <label for="comment">Enter comment:</label>
-          <input name="comment" type="text"/>
-
-          <input type="hidden" name="parent" value="${commentJson.id}"/>
-          <input type="hidden" name="root" value="${rootElementId}"/>
-
-          <input type="submit" value="Send Comment!"/>
-        </form>
+        <p>You must be <a href="${authJson.loginUrl}">logged in</a> to reply.</p>
         `;
   }
-  return `
-      <p>You must be <a href="${authJson.loginUrl}">logged in</a> to reply.</p>
-      `;
+
+  if (authJson.username == "") {
+    return `<p>You must <a href="/profile">define a username</a> to reply.</p>`;
+  }
+
+  return  `
+    <form action="/data" method="POST">
+      <label for="comment">Enter comment:</label>
+      <input name="comment" type="text"/>
+
+      <input type="hidden" name="parent" value="${commentJson.id}"/>
+      <input type="hidden" name="root" value="${rootElementId}"/>
+
+      <input type="submit" value="Send Comment!"/>
+    </form>
+    `;
 }
 
 function deleteAllComments() {
@@ -149,7 +143,32 @@ function buildCommentTreeHelper(parentNode, commentJsons) {
   }
 }
 
-function showAndHide(elementToShow, elementToHide) {
+function show(elementToShow) {
   elementToShow.classList.remove('hidden');
-  elementToHide.classList.add('hidden');
+}
+
+function hide(elementsToHide) {
+  for (let elementToHide of elementsToHide) {
+    elementToHide.classList.add('hidden');
+  }
+}
+
+function displayPropertCommentField(authJson) {
+  let submitForm = document.getElementById('comment-submit-form-container');
+  let loginP = document.getElementById('comment-submit-login');
+  let usernameP = document.getElementById('comment-submit-username');
+  loginP.innerHTML = `
+      <p>
+        You must be <a href="${authJson.loginUrl}"> logged in</a> to comment.
+      </p>`;
+
+  hide([submitForm, loginP, usernameP]);
+  if (!authJson.loggedIn) {
+    show(loginP);
+  } else if (authJson.username == ''){
+    show(usernameP);
+  } else {
+    document.getElementById('logout').href = authJson.logoutUrl;
+    show(submitForm);
+  }
 }
