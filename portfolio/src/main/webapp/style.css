@@ -90,6 +90,13 @@ body {
   margin-botttom: 10px;
 }
 
+.chart-container {
+  border: 5px solid;
+  border-color: threedhighlight threedshadow threeddarkshadow threedhighlight;
+  width: 500px;
+  margin: 0 auto;
+}
+
 .hidden {
   display: none;
 }
