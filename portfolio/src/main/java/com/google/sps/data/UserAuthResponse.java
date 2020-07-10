@@ -19,13 +19,14 @@ package com.google.sps.data;
 public final class UserAuthResponse {
 
   private final boolean loggedIn;
-  // If logged in, the logout url; if logged out, the login url.
-  private final String logXUrl;
+  private final String loginUrl;
+  private final String logoutUrl;
   private final String username;
 
-  public UserAuthResponse(boolean loggedIn, String logXUrl, String username) {
+  public UserAuthResponse(boolean loggedIn, String loginUrl, String logoutUrl, String username) {
     this.loggedIn = loggedIn;
-    this.logXUrl = logXUrl;
+    this.loginUrl = loginUrl;
+    this.logoutUrl = logoutUrl;
     this.username = username;
   }
 }

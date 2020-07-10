@@ -102,7 +102,7 @@ function createCommentElement(commentJson, rootElementId, authJson) {
 function createReplyForm(commentJson, rootElementId, authJson) {
   if (!authJson.loggedIn) {
     return `
-        <p>You must be <a href="${authJson.logXUrl}">logged in</a> to reply.</p>
+        <p>You must be <a href="${authJson.loginUrl}">logged in</a> to reply.</p>
         `;
   }
 
@@ -159,7 +159,7 @@ function displayPropertCommentField(authJson) {
   let usernameP = document.getElementById('comment-submit-username');
   loginP.innerHTML = `
       <p>
-        You must be <a href="${authJson.logXUrl}"> logged in</a> to comment.
+        You must be <a href="${authJson.loginUrl}"> logged in</a> to comment.
       </p>`;
 
   hide([submitForm, loginP, usernameP]);
@@ -168,7 +168,7 @@ function displayPropertCommentField(authJson) {
   } else if (authJson.username == ''){
     show(usernameP);
   } else {
-    document.getElementById('logout').href = authJson.logXUrl;
+    document.getElementById('logout').href = authJson.logoutUrl;
     show(submitForm);
   }
 }
