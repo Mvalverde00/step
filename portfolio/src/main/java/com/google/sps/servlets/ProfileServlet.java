@@ -82,12 +82,8 @@ public class ProfileServlet extends HttpServlet {
     if (username == null) {
       return false;
     }
-
-    if (username.length() < 4 || username.length() > 30) {
-      return false;
-    }
-    // alphanumeric characters and spaces allowed
-    if (!username.matches("[A-Za-z0-9 ]+")) {
+    // alphanumeric characters and spaces allowed.  4-30 characters
+    if (!username.matches("^[A-Za-z0-9 ]{4,30}")) {
       return false;
     }
 
