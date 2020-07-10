@@ -45,11 +45,13 @@ public class UserAuthServlet extends HttpServlet {
 
     boolean loggedIn = isLoggedIn();
     String redirectURL  = ServletUtil.getRedirect(request);
-    String loginUrl = loggedIn ? "" : userService.createLoginURL(redirectURL);
+    // loginUrl if not currently logged in, logout url if currently logged in.
+    String logXUrl = loggedIn ? userService.createLogoutURL(redirectURL) :
+        userService.createLoginURL(redirectURL);
     String username = loggedIn ? getUsername() : "";
 
     UserAuthResponse UAResponse =
-        new UserAuthResponse(loggedIn, loginUrl, username);
+        new UserAuthResponse(loggedIn, logXUrl, username);
 
     response.getWriter().println(ServletUtil.toJson(UAResponse));
   }

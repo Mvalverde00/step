@@ -102,7 +102,7 @@ function createCommentElement(commentJson, rootElementId, authJson) {
 function createReplyForm(commentJson, rootElementId, authJson) {
   if (!authJson.loggedIn) {
     return `
-        <p>You must be <a href="${authJson.loginUrl}">logged in</a> to reply.</p>
+        <p>You must be <a href="${authJson.logXUrl}">logged in</a> to reply.</p>
         `;
   }
 
@@ -154,20 +154,21 @@ function hide(elementsToHide) {
 }
 
 function displayPropertCommentField(authJson) {
-  let submitForm = document.getElementById('comment-submit-form');
+  let submitForm = document.getElementById('comment-submit-form-container');
   let loginP = document.getElementById('comment-submit-login');
   let usernameP = document.getElementById('comment-submit-username');
   loginP.innerHTML = `
       <p>
-        You must be <a href="${authJson.loginUrl}"> logged in</a> to comment.
+        You must be <a href="${authJson.logXUrl}"> logged in</a> to comment.
       </p>`;
 
   hide([submitForm, loginP, usernameP]);
   if (!authJson.loggedIn) {
     show(loginP);
-  } else if (authJson.username == ""){
+  } else if (authJson.username == ''){
     show(usernameP);
   } else {
+    document.getElementById('logout').href = authJson.logXUrl;
     show(submitForm);
   }
 }
