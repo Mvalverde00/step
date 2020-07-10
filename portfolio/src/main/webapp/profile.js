@@ -42,8 +42,8 @@ function populateUsername() {
       .then(response => response.json())
       .then(authJson => {
         let usernameInput = document.getElementById('username');
-        if (authJson.username == "") {
-          usernameInput.placeholder = "Enter username here."
+        if (authJson.username == '') {
+          usernameInput.placeholder = 'Enter username here.'
         } else {
           usernameInput.value = authJson.username;
         }
