@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that deletes all comment data */
+/** Servlet that allows logged-in user to define/update username */
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
 
