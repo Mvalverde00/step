@@ -52,9 +52,11 @@ public class DataServlet extends HttpServlet {
     int recordsToReturn = getRecordsToReturn(request);
     List<Long> rootCommentIds = new ArrayList<>();
     for (Entity e : rootComments.asIterable(FetchOptions.Builder.withLimit(recordsToReturn))) {
-      Comment c = new Comment(e);
-      comments.add(c);
-      rootCommentIds.add(c.getId());
+      Comment c = Comment.createComment(e);
+      if (c != null) {
+        comments.add(c);
+        rootCommentIds.add(c.getId());
+      }
     }
 
     // Query with IN operator breaks if list is empty, so only run if nonempty
@@ -64,7 +66,10 @@ public class DataServlet extends HttpServlet {
           .addSort("datePosted", SortDirection.DESCENDING);
       PreparedQuery childComments = ds.prepare(childCommentQuery);
       for (Entity e : childComments.asIterable()) {
-        comments.add(new Comment(e));
+        Comment c = Comment.createComment(e);
+        if (c != null) {
+          comments.add(c);
+        }
       }
     }
 
@@ -98,7 +103,7 @@ public class DataServlet extends HttpServlet {
     }
     if (message != null && !message.isEmpty()) {
       Entity commentEntity = Comment.createComment(
-          message, parent, root, score, UserAuthServlet.getEmail());
+          message, parent, root, score, UserAuthServlet.getUserEntity().getKey());
       ds.put(commentEntity);
     }
     response.sendRedirect(ServletUtil.getRedirect(request));

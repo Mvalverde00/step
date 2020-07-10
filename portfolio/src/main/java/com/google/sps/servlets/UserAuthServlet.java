@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -77,8 +78,10 @@ public class UserAuthServlet extends HttpServlet {
   }
 
   public static Entity getUserEntity() {
-    Query query = new Query("UserInfo")
-        .setFilter(new FilterPredicate("id", Query.FilterOperator.EQUAL, getId()));
+    Query query = new Query("UserInfo").setFilter(new FilterPredicate(
+        Entity.KEY_RESERVED_PROPERTY,
+        Query.FilterOperator.EQUAL,
+        KeyFactory.createKey("UserInfo", getId())));
     PreparedQuery result = ds.prepare(query);
 
     Entity userEntity = result.asSingleEntity();

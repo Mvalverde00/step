@@ -14,10 +14,16 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 
 /** A comment on a webpage */
 public final class Comment {
+
+  private static final DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
   private final long id;
   private final String message;
@@ -39,7 +45,7 @@ public final class Comment {
     this.sender = sender;
   }
 
-  public Comment(Entity e) {
+  public Comment(Entity e, String sender) {
     this(
         e.getKey().getId(),
         (String) e.getProperty("message"),
@@ -47,21 +53,32 @@ public final class Comment {
         (long) e.getProperty("parent"),
         (long) e.getProperty("root"),
         (long) e.getProperty("score"),
-        (String) e.getProperty("sender"));
+        sender);
   }
 
   public long getId() {
     return this.id;
   }
 
-  public static Entity createComment(String message, long parent, long root, long score, String sender) {
+  public static Comment createComment(Entity e) {
+    try {
+      Entity userInfo = ds.get((Key) e.getProperty("poster"));
+      return new Comment(e, (String) userInfo.getProperty("username"));
+    } catch (EntityNotFoundException err) {
+      System.err.println(
+          "Error finding user associated with comment key: " + e.getKey());
+      return null;
+    }
+  }
+
+  public static Entity createComment(String message, long parent, long root, long score, Key poster) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("datePosted", System.currentTimeMillis());
     commentEntity.setProperty("parent", parent);
     commentEntity.setProperty("root", root);
     commentEntity.setProperty("score", score);
-    commentEntity.setProperty("sender", sender);
+    commentEntity.setProperty("poster", poster);
 
     return commentEntity;
   }
