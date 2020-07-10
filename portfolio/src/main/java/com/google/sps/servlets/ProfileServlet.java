@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.sps.data.ProfileResponse;
+import com.google.sps.util.ServletUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +53,13 @@ public class ProfileServlet extends HttpServlet {
       return;
     }
 
+    response.setContentType("application/json");
+
     String username = request.getParameter("username");
     if (!usernameMeetsCriteria(username)) {
-      // TODO: tell the user their username was bad.
+      ProfileResponse pr =
+          new ProfileResponse(false, "Username does not meet requirements");
+      response.getWriter().println(ServletUtil.toJson(pr));
       return;
     }
 
@@ -67,9 +73,16 @@ public class ProfileServlet extends HttpServlet {
     userEntity.setProperty("username", username);
 
     ds.put(userEntity);
+
+    ProfileResponse pr = new ProfileResponse(true, "Username updated");
+    response.getWriter().println(ServletUtil.toJson(pr));
   }
 
   private boolean usernameMeetsCriteria(String username) {
+    if (username == null) {
+      return false;
+    }
+
     if (username.length() < 4 || username.length() > 30) {
       return false;
     }

@@ -84,6 +84,10 @@ public class DataServlet extends HttpServlet {
       UserAuthServlet.notLoggedInPage(request, response, "send a comment.");
       return;
     }
+    if (UserAuthServlet.getUsername().equals("")) {
+      response.sendRedirect("/profile");
+      return;
+    }
 
     String message = request.getParameter("comment");
     long parent = 0;

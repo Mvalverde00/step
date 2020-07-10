@@ -91,9 +91,14 @@
 
         <input type="submit" value="Send Comment!"/>
       </form>
-      
+
       <!--Only revealed for logged out users-->
       <p id="comment-submit-login" class="hidden"></p>
+
+      <!--Only revealed for logged in users without a nickname-->
+      <p id="comment-submit-username" class="hidden">
+        You must <a href="/profile">choose a username</a> to comment.
+      </p>
 
       <br/>
       <div id="comment-container"></div>

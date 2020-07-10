@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Michael's Portfolio | Profile Page</title>
     <link rel="stylesheet" href="style.css">
-    <script src=""></script>
+    <script src="profile.js"></script>
   </head>
   <body>
     <div id="content">
@@ -13,11 +13,12 @@
       <p>
         When choosing a username, please make sure it:
         <ul>
-          <li>Is 4-30 characters long<li>
+          <li>Is 4-30 characters long</li>
           <li>Contains only numbers, letters, and spaces</li>
         </ul>
       </p>
-      <form action="/profile" method="POST">
+      <div id="user-feedback"></div>
+      <form onsubmit="return updateUsername()" action="/profile" method="POST">
         <label for="username">Enter Username:</label>
         <input id="username" name = "username" type="text"/>
 
