@@ -18,10 +18,49 @@ package com.google.sps;
  * Utility class for creating greeting messages.
  */
 public class Greeter {
+
+  public static final char illegalChars[] = {'@', '$', '#'};
+
   /**
    * Returns a greeting for the given name.
    */
   public String greet(String name) {
+    name = trim(name);
+    name = removeIllegalChars(name);
     return "Hello " + name;
+  }
+
+  public String trim(String str) {
+    return trim(str, 0, str.length() - 1);
+  }
+  private String trim(String str, int start, int end) {
+    if (str.charAt(start) == ' ') {
+      return trim(str, start + 1, end);
+    }
+    if (str.charAt(end) == ' ') {
+      return trim(str, start, end - 1);
+    }
+
+    return str.substring(start, end + 1);
+  }
+
+  public String removeIllegalChars(String str) {
+    StringBuilder newString = new StringBuilder();
+
+    for (char c : str.toCharArray()) {
+      if (!contains(illegalChars, c)) {
+        newString.append(c);
+      }
+    }
+
+    return newString.toString();
+  }
+  private boolean contains(char arr[], char c) {
+    for (char arrChar : arr) {
+      if (c == arrChar) {
+        return true;
+      }
+    }
+    return false;
   }
 }
