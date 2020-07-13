@@ -105,12 +105,43 @@ function createVoteDiv(commentJson) {
   let voteDiv = document.createElement('div');
   voteDiv.classList.add('comment-vote');
 
+  let upvote = document.createElement('button');
+  upvote.innerText = '+1';
+
   let scoreP = document.createElement('p');
   scoreP.innerText = commentJson.score;
 
+  let downvote = document.createElement('button');
+  downvote.innerText = '-1';
+
+  upvote.onclick = () => {
+    voteOnclick(upvote, downvote, 1, commentJson);
+  };
+  downvote.onclick = () => {
+    voteOnclick(downvote, upvote, -1, commentJson);
+  }
+
+  voteDiv.appendChild(upvote);
   voteDiv.appendChild(scoreP);
+  voteDiv.appendChild(downvote);
 
   return voteDiv;
+}
+
+function voteOnclick(clicked, other, val, commentJson) {
+  let value;
+
+  if (clicked.classList.contains('clicked')) {
+    clicked.classList.remove('clicked');
+    value = 0;
+  } else {
+    clicked.classList.add('clicked');
+    other.classList.remove('clicked');
+    value = val;
+  }
+
+  fetch(`/vote?commentId=${commentJson.id}&value=${value}`, {method: 'POST'})
+      .then(setTimeout(displayComments(), 750));
 }
 
 function createReplyForm(commentJson, rootElementId, authJson) {
