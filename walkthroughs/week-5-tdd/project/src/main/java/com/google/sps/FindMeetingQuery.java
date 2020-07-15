@@ -27,8 +27,23 @@ import java.util.HashMap;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<String> attendees = request.getAttendees();
+    Collection<TimeRange> timesMandatory =
+        querySpecificAttendees(events, request, request.getAttendees());
+    Collection<TimeRange> timesOptional =
+        querySpecificAttendees(events, request, request.getOptionalAttendees());
 
+    // Try to find a meeting time that works for mandatory + optional, but if
+    // no such time exists just return what works for mandatory, unless there
+    // were no mandatory people.
+    Collection<TimeRange> timesBoth = intersect(timesMandatory, timesOptional);
+    if (timesBoth.size() > 0 || request.getAttendees().size() == 0) {
+      return new ArrayList<>(timesBoth);
+    }
+    return new ArrayList<>(timesMandatory);
+  }
+
+  // Solve the query using the given attendees, not the attendees in the request
+  private Collection<TimeRange> querySpecificAttendees(Collection<Event> events, MeetingRequest request, Collection<String> attendees) {
     List<Collection<TimeRange>> attendeesFreeTimes =
         new ArrayList<>(getAttendeesFreeTimes(events, attendees).values());
 
@@ -43,7 +58,6 @@ public final class FindMeetingQuery {
     Collection<TimeRange> options = enforceCriteria(possibleTimes, request);
 
     return options;
-
   }
 
   private Collection<TimeRange> enforceCriteria(Collection<TimeRange> possibleTimes, MeetingRequest request) {
