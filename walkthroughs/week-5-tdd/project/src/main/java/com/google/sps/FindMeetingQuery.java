@@ -27,19 +27,55 @@ import java.util.HashMap;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+    // Precompute mandatory times to avoid recalculating it many times
     Collection<TimeRange> timesMandatory =
         querySpecificAttendees(events, request, request.getAttendees());
-    Collection<TimeRange> timesOptional =
-        querySpecificAttendees(events, request, request.getOptionalAttendees());
 
-    // Try to find a meeting time that works for mandatory + optional, but if
-    // no such time exists just return what works for mandatory, unless there
-    // were no mandatory people.
-    Collection<TimeRange> timesBoth = intersect(timesMandatory, timesOptional);
-    if (timesBoth.size() > 0 || request.getAttendees().size() == 0) {
-      return new ArrayList<>(timesBoth);
+    Solution sol = queryOptimalSolution(events, timesMandatory, request);
+    // special case
+    if (request.optionalAttendeesOnly() && sol.numOptionalAttendees() == 0) {
+      return new ArrayList<TimeRange>();
     }
-    return new ArrayList<>(timesMandatory);
+    return sol.solution();
+  }
+
+  private Solution queryOptimalSolution(
+      Collection<Event> events,
+      Collection<TimeRange> timesMandatory,
+      MeetingRequest request) {
+    return queryOptimalSolution(
+        events,
+        timesMandatory,
+        new ArrayList<String>(request.getOptionalAttendees()),
+        request,
+        new ArrayList<String>(),
+        0);
+
+  }
+  private Solution queryOptimalSolution(
+      Collection<Event> events,
+      Collection<TimeRange> timesMandatory,
+      List<String> optionalAttendees,
+      MeetingRequest request,
+      List<String> attendeeAcc,
+      int indexAcc) {
+
+    Solution bestSol = new Solution(0, timesMandatory);
+    for (int i = indexAcc; i < optionalAttendees.size(); i++) {
+      attendeeAcc.add(optionalAttendees.get(i));
+
+      Collection<TimeRange> timesOptional = querySpecificAttendees(events, request, attendeeAcc);
+      Collection<TimeRange> timesBoth = intersect(timesMandatory, timesOptional);
+
+      Solution sol = new Solution(attendeeAcc.size(), timesBoth);
+      Solution branchSol = queryOptimalSolution(
+          events, timesMandatory, optionalAttendees, request, attendeeAcc, i + 1);
+      bestSol = Solution.betterSolution(bestSol, Solution.betterSolution(sol, branchSol));
+
+      attendeeAcc.remove(attendeeAcc.size() - 1);
+    }
+
+    return bestSol;
   }
 
   // Solve the query using the given attendees, not the attendees in the request

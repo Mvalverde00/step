@@ -73,4 +73,8 @@ public final class MeetingRequest {
   public long getDuration() {
     return duration;
   }
+
+  public boolean optionalAttendeesOnly() {
+    return attendees.size() == 0 && optional_attendees.size() != 0;
+  }
 }
