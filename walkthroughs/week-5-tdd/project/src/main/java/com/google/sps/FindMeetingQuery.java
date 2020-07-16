@@ -32,7 +32,8 @@ public final class FindMeetingQuery {
         querySpecificAttendees(events, request, request.getAttendees());
 
     Solution sol = queryOptimalSolution(events, timesMandatory, request);
-    // special case
+    // special case- a meeting with only optional attendees, none of whom
+    // can make it, should return an empty list
     if (request.optionalAttendeesOnly() && sol.numOptionalAttendees() == 0) {
       return new ArrayList<TimeRange>();
     }
@@ -79,7 +80,9 @@ public final class FindMeetingQuery {
   }
 
   // Solve the query using the given attendees, not the attendees in the request
-  private Collection<TimeRange> querySpecificAttendees(Collection<Event> events, MeetingRequest request, Collection<String> attendees) {
+  private Collection<TimeRange> querySpecificAttendees(
+      Collection<Event> events, MeetingRequest request, Collection<String> attendees) {
+
     List<Collection<TimeRange>> attendeesFreeTimes =
         new ArrayList<>(getAttendeesFreeTimes(events, attendees).values());
 
@@ -96,7 +99,9 @@ public final class FindMeetingQuery {
     return options;
   }
 
-  private Collection<TimeRange> enforceCriteria(Collection<TimeRange> possibleTimes, MeetingRequest request) {
+  private Collection<TimeRange> enforceCriteria(
+      Collection<TimeRange> possibleTimes, MeetingRequest request) {
+
     Collection<TimeRange> options = new ArrayList<TimeRange>();
 
     for (TimeRange timeRange : possibleTimes) {
@@ -108,7 +113,7 @@ public final class FindMeetingQuery {
     return options;
   }
 
-  // Collapse multiple sets of time ranges into one collection of time ranges with the total intersection
+  // Collapse multiple sets of timeranges into one collection representing the total intersection
   private Collection<TimeRange> collapse(Collection<Collection<TimeRange>> timeRangesCollection) {
     if (timeRangesCollection.size() == 0) {
       return new TreeSet<TimeRange>(TimeRange.ORDER_BY_START);
@@ -155,8 +160,11 @@ public final class FindMeetingQuery {
   }
 
   // Get attendees event times, then take the complement of the set.
-  private HashMap<String, Collection<TimeRange>> getAttendeesFreeTimes(Collection<Event> events, Collection<String> attendees) {
-    HashMap<String, Collection<TimeRange>> attendeeTimes = getAttendeesEventTimes(events, attendees);
+  private HashMap<String, Collection<TimeRange>> getAttendeesFreeTimes(
+      Collection<Event> events, Collection<String> attendees) {
+
+    HashMap<String, Collection<TimeRange>> attendeeTimes =
+        getAttendeesEventTimes(events, attendees);
 
     for (String attendee : attendees) {
       Collection<TimeRange> attendeeEventTimes = attendeeTimes.get(attendee);
@@ -185,7 +193,9 @@ public final class FindMeetingQuery {
     return attendeeTimes;
   }
 
-  private HashMap<String, Collection<TimeRange>> getAttendeesEventTimes(Collection<Event> events, Collection<String> attendees) {
+  private HashMap<String, Collection<TimeRange>> getAttendeesEventTimes(
+      Collection<Event> events, Collection<String> attendees) {
+        
     HashMap<String, Collection<TimeRange>> map = new HashMap<>();
     for (String attendee : attendees) {
       map.put(attendee, new TreeSet<TimeRange>(TimeRange.ORDER_BY_START));
