@@ -26,12 +26,10 @@ import java.util.TreeSet;
 import java.util.HashMap;
 
 public final class FindMeetingQuery {
+  
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // Precompute mandatory times to avoid recalculating it many times
-    Collection<TimeRange> timesMandatory =
-        querySpecificAttendees(events, request, request.getAttendees());
+    Solution sol = queryOptimalSolution(events, request);
 
-    Solution sol = queryOptimalSolution(events, timesMandatory, request);
     // special case- a meeting with only optional attendees, none of whom
     // can make it, should return an empty list
     if (request.optionalAttendeesOnly() && sol.numOptionalAttendees() == 0) {
@@ -40,10 +38,11 @@ public final class FindMeetingQuery {
     return sol.solution();
   }
 
-  private Solution queryOptimalSolution(
-      Collection<Event> events,
-      Collection<TimeRange> timesMandatory,
-      MeetingRequest request) {
+  private Solution queryOptimalSolution(Collection<Event> events, MeetingRequest request) {
+    // Precompute mandatory times to avoid recalculating it many times
+    Collection<TimeRange> timesMandatory =
+        querySpecificAttendees(events, request, request.getAttendees());
+
     return queryOptimalSolution(
         events,
         timesMandatory,
@@ -220,6 +219,7 @@ public final class FindMeetingQuery {
     return TimeRange.fromStartEnd(start, end, false);
   }
 
+  // Given a collection of time ranges, merge any overlapping ranges into a single large range
   private Collection<TimeRange> mergeTimeRanges(Collection<TimeRange> ranges) {
     List<TimeRange> mergedTimes = new ArrayList<>();
 
