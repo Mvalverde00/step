@@ -22,6 +22,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class GreeterTest {
 
+  private static final char specialChars[] = new char[] {'@', '$', '#'};
+
   @Test
    public void testGreeting() {
     Greeter greeter = new Greeter();
@@ -45,11 +47,19 @@ public final class GreeterTest {
   public void testGreetingRemovesSpecialChars() {
     Greeter greeter = new Greeter();
 
-    char specialChars[] = new char[] {'@', '$', '#'};
-
     String greeting = greeter.greet("M#i@c$$$hae@#$l");
 
     // Whitespace should be trimmed
+    Assert.assertEquals("Hello Michael", greeting);
+  }
+
+  @Test
+  public void testGreetingRemovesSpecialCharsAndTrimsWhitespace() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet("  $ @ # Mich@ael #   #");
+
+    // special chars should be removed and resultant whitespace trimmed
     Assert.assertEquals("Hello Michael", greeting);
   }
 }

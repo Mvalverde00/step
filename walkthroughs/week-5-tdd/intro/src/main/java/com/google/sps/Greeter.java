@@ -25,14 +25,15 @@ public class Greeter {
    * Returns a greeting for the given name.
    */
   public String greet(String name) {
-    name = trim(name);
     name = removeIllegalChars(name);
+    name = trim(name);
     return "Hello " + name;
   }
 
   public String trim(String str) {
     return trim(str, 0, str.length() - 1);
   }
+
   private String trim(String str, int start, int end) {
     if (str.charAt(start) == ' ') {
       return trim(str, start + 1, end);
@@ -55,6 +56,7 @@ public class Greeter {
 
     return newString.toString();
   }
+  
   private boolean contains(char arr[], char c) {
     for (char arrChar : arr) {
       if (c == arrChar) {
