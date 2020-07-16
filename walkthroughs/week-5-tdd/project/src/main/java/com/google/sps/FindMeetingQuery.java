@@ -51,8 +51,9 @@ public final class FindMeetingQuery {
         request,
         new ArrayList<String>(),
         0);
-
   }
+
+  // Use recursive backtracking to generate all combinations and track the best current solution
   private Solution queryOptimalSolution(
       Collection<Event> events,
       Collection<TimeRange> timesMandatory,
@@ -195,7 +196,7 @@ public final class FindMeetingQuery {
 
   private HashMap<String, Collection<TimeRange>> getAttendeesEventTimes(
       Collection<Event> events, Collection<String> attendees) {
-        
+
     HashMap<String, Collection<TimeRange>> map = new HashMap<>();
     for (String attendee : attendees) {
       map.put(attendee, new TreeSet<TimeRange>(TimeRange.ORDER_BY_START));

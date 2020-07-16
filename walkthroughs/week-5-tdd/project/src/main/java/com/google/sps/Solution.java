@@ -56,7 +56,5 @@ public class Solution {
       } else {
         return this.solution.size() >= other.solution.size();
       }
-
     }
-
 }
