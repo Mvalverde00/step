@@ -25,7 +25,7 @@ public final class GreeterTest {
   private static final char specialChars[] = new char[] {'@', '$', '#'};
 
   @Test
-   public void testGreeting() {
+  public void testGreeting() {
     Greeter greeter = new Greeter();
 
     String greeting = greeter.greet("Ada");
