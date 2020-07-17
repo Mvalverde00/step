@@ -84,8 +84,8 @@
         <input type="number" id="records" name="records" onchange="displayComments()" value="15", min="1", max="100"/>
       </form>
       <!--Only revealed for logged in users-->
-      <div id="comment-submit-form-container">
-        <form class="hidden" action="/data" method="POST">
+      <div id="comment-submit-form-container" class="hidden">
+        <form action="/data" method="POST">
           <label for="comment">Enter comment:</label>
           <input name="comment" type="text"/>
           <input type="hidden" name="parent" value="0"/>
