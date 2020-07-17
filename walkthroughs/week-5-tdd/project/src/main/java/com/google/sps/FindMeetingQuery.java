@@ -209,8 +209,8 @@ public final class FindMeetingQuery {
     }
 
     for (Event event : events) {
-      for (String attendee : attendees) {
-        if (event.getAttendees().contains(attendee)) {
+      for (String attendee : event.getAttendees()) {
+        if (map.containsKey(attendee)) {
           map.get(attendee).add(event.getWhen());
         }
       }
