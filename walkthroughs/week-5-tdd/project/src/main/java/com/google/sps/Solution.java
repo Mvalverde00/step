@@ -5,9 +5,9 @@ import java.util.Collection;
 
 public class Solution {
 
-    protected int numOptionalAttendees;
-    protected Collection<TimeRange> solution;
-    protected boolean isValidSolution;
+    private int numOptionalAttendees;
+    private Collection<TimeRange> solution;
+    private boolean isValidSolution;
 
     public Solution(int numOptionalAttendees, Collection<TimeRange> solution) {
       this.numOptionalAttendees = numOptionalAttendees;
