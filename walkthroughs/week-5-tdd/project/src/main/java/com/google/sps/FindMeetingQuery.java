@@ -164,11 +164,12 @@ public final class FindMeetingQuery {
   private Map<String, Collection<TimeRange>> getAttendeesFreeTimes(
       Collection<Event> events, Collection<String> attendees) {
 
-    Map<String, Collection<TimeRange>> attendeeTimes =
+    Map<String, Collection<TimeRange>> attendeesFreeTimes = new HashMap<>();
+    Map<String, Collection<TimeRange>> attendeesEventTimes =
         getAttendeesEventTimes(events, attendees);
 
     for (String attendee : attendees) {
-      Collection<TimeRange> attendeeEventTimes = attendeeTimes.get(attendee);
+      Collection<TimeRange> attendeeEventTimes = attendeesEventTimes.get(attendee);
       Collection<TimeRange> attendeeFreeTimes = new TreeSet<TimeRange>(TimeRange.ORDER_BY_START);
 
       // Removing any overlapping ranges by merging them.
@@ -188,10 +189,10 @@ public final class FindMeetingQuery {
         attendeeFreeTimes.add(freeTime);
       }
 
-      attendeeTimes.put(attendee, attendeeFreeTimes);
+      attendeesFreeTimes.put(attendee, attendeeFreeTimes);
     }
 
-    return attendeeTimes;
+    return attendeesFreeTimes;
   }
 
   private Map<String, Collection<TimeRange>> getAttendeesEventTimes(
