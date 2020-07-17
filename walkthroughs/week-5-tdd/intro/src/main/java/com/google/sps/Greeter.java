@@ -14,12 +14,17 @@
 
 package com.google.sps;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
 /**
  * Utility class for creating greeting messages.
  */
 public class Greeter {
 
-  public static final char illegalChars[] = {'@', '$', '#'};
+  private static final Set<Character> illegalChars =
+      new HashSet<>(Arrays.asList('@','$','#'));
 
   /**
    * Returns a greeting for the given name.
@@ -49,20 +54,11 @@ public class Greeter {
     StringBuilder newString = new StringBuilder();
 
     for (char c : str.toCharArray()) {
-      if (!contains(illegalChars, c)) {
+      if (!illegalChars.contains(c)) {
         newString.append(c);
       }
     }
 
     return newString.toString();
-  }
-  
-  private boolean contains(char arr[], char c) {
-    for (char arrChar : arr) {
-      if (c == arrChar) {
-        return true;
-      }
-    }
-    return false;
   }
 }
