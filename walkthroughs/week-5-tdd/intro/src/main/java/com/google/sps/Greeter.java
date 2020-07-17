@@ -29,25 +29,14 @@ public class Greeter {
   /**
    * Returns a greeting for the given name.
    */
-  public String greet(String name) {
+  public String greet(String name) throws IllegalArgumentException {
+    if (name == null) {
+      throw new IllegalArgumentException("Name cannot be null");
+    }
+
     name = removeIllegalChars(name);
-    name = trim(name);
+    name = name.trim();
     return "Hello " + name;
-  }
-
-  public String trim(String str) {
-    return trim(str, 0, str.length() - 1);
-  }
-
-  private String trim(String str, int start, int end) {
-    if (str.charAt(start) == ' ') {
-      return trim(str, start + 1, end);
-    }
-    if (str.charAt(end) == ' ') {
-      return trim(str, start, end - 1);
-    }
-
-    return str.substring(start, end + 1);
   }
 
   public String removeIllegalChars(String str) {

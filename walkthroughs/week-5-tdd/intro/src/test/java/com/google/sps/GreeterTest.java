@@ -60,4 +60,11 @@ public final class GreeterTest {
     // special chars should be removed and resultant whitespace trimmed
     Assert.assertEquals("Hello Michael", greeting);
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testGreetingNullInput() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet(null);
+  }
 }
