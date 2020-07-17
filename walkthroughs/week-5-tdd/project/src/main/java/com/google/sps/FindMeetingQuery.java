@@ -59,22 +59,22 @@ public final class FindMeetingQuery {
       Collection<TimeRange> timesMandatory,
       List<String> optionalAttendees,
       MeetingRequest request,
-      List<String> attendeeAcc,
-      int indexAcc) {
+      List<String> attendeeAccumulator,
+      int indexAccumulator) {
 
     Solution bestSol = new Solution(0, timesMandatory);
-    for (int i = indexAcc; i < optionalAttendees.size(); i++) {
-      attendeeAcc.add(optionalAttendees.get(i));
+    for (int i = indexAccumulator; i < optionalAttendees.size(); i++) {
+      attendeeAccumulator.add(optionalAttendees.get(i));
 
-      Collection<TimeRange> timesOptional = querySpecificAttendees(events, request, attendeeAcc);
+      Collection<TimeRange> timesOptional = querySpecificAttendees(events, request, attendeeAccumulator);
       Collection<TimeRange> timesBoth = intersect(timesMandatory, timesOptional);
 
-      Solution sol = new Solution(attendeeAcc.size(), timesBoth);
+      Solution sol = new Solution(attendeeAccumulator.size(), timesBoth);
       Solution branchSol = queryOptimalSolution(
-          events, timesMandatory, optionalAttendees, request, attendeeAcc, i + 1);
+          events, timesMandatory, optionalAttendees, request, attendeeAccumulator, i + 1);
       bestSol = Solution.betterSolution(bestSol, Solution.betterSolution(sol, branchSol));
 
-      attendeeAcc.remove(attendeeAcc.size() - 1);
+      attendeeAccumulator.remove(attendeeAccumulator.size() - 1);
     }
 
     return bestSol;
