@@ -417,4 +417,35 @@ public final class FindMeetingQueryTest {
 
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void optimalSolutionNotEnoughTime() {
+    // One mandatory attendee with 2 slots to fit meeting. Two optional attendees, both of
+    // whom do not have enough time to make the first time slot, but one of whom does have
+    // enough time to make the second time slot.  The second time slot should be returned
+
+    Collection<Event> events = Arrays.asList(
+        new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
+            Arrays.asList(PERSON_A)),
+        new Event("Event 2", TimeRange.fromStartEnd(TIME_0900AM, TIME_1000AM, false),
+            Arrays.asList(PERSON_A)),
+        new Event("Event 3", TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true),
+            Arrays.asList(PERSON_A)),
+        new Event("Event 4", TimeRange.fromStartEnd(TIME_0800AM, TIME_0830AM, false),
+            Arrays.asList(PERSON_B)),
+        new Event("Event 5", TimeRange.fromStartEnd(TIME_0800AM, TIME_0830AM, false),
+            Arrays.asList(PERSON_C)),
+        new Event("Event 6", TimeRange.fromStartEnd(TIME_1000AM, TIME_1030AM, false),
+            Arrays.asList(PERSON_C)));
+
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_60_MINUTES);
+    request.addOptionalAttendee(PERSON_B);
+    request.addOptionalAttendee(PERSON_C);
+
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected =
+        Arrays.asList(TimeRange.fromStartEnd(TIME_1000AM, TIME_1100AM, false));
+
+    Assert.assertEquals(expected, actual);
+  }
 }

@@ -66,8 +66,10 @@ public final class FindMeetingQuery {
     for (int i = indexAccumulator; i < optionalAttendees.size(); i++) {
       attendeeAccumulator.add(optionalAttendees.get(i));
 
-      Collection<TimeRange> timesOptional = querySpecificAttendees(events, request, attendeeAccumulator);
-      Collection<TimeRange> timesBoth = intersect(timesMandatory, timesOptional);
+      Collection<TimeRange> timesOptional =
+          querySpecificAttendees(events, request, attendeeAccumulator);
+      Collection<TimeRange> timesBoth =
+          enforceCriteria(intersect(timesMandatory, timesOptional), request);
 
       Solution sol = new Solution(attendeeAccumulator.size(), timesBoth);
       Solution branchSol = queryOptimalSolution(
@@ -94,10 +96,13 @@ public final class FindMeetingQuery {
     */
     attendeesFreeTimes.add(Arrays.asList(TimeRange.WHOLE_DAY));
 
-    Collection<TimeRange> possibleTimes = collapse(attendeesFreeTimes);
-    Collection<TimeRange> options = enforceCriteria(possibleTimes, request);
+    return getAvailableTimes(attendeesFreeTimes, request);
+  }
 
-    return options;
+  private Collection<TimeRange> getAvailableTimes(
+      Collection<Collection<TimeRange>> attendeesFreeTimes, MeetingRequest request) {
+
+    return enforceCriteria(collapse(attendeesFreeTimes), request);
   }
 
   private Collection<TimeRange> enforceCriteria(
