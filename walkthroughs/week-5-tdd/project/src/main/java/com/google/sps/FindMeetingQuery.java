@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -160,10 +161,10 @@ public final class FindMeetingQuery {
   }
 
   // Get attendees event times, then take the complement of the set.
-  private HashMap<String, Collection<TimeRange>> getAttendeesFreeTimes(
+  private Map<String, Collection<TimeRange>> getAttendeesFreeTimes(
       Collection<Event> events, Collection<String> attendees) {
 
-    HashMap<String, Collection<TimeRange>> attendeeTimes =
+    Map<String, Collection<TimeRange>> attendeeTimes =
         getAttendeesEventTimes(events, attendees);
 
     for (String attendee : attendees) {
@@ -193,10 +194,10 @@ public final class FindMeetingQuery {
     return attendeeTimes;
   }
 
-  private HashMap<String, Collection<TimeRange>> getAttendeesEventTimes(
+  private Map<String, Collection<TimeRange>> getAttendeesEventTimes(
       Collection<Event> events, Collection<String> attendees) {
 
-    HashMap<String, Collection<TimeRange>> map = new HashMap<>();
+    Map<String, Collection<TimeRange>> map = new HashMap<>();
     for (String attendee : attendees) {
       map.put(attendee, new TreeSet<TimeRange>(TimeRange.ORDER_BY_START));
     }
