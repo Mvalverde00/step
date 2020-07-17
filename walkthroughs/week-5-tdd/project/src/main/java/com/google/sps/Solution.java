@@ -12,7 +12,7 @@ public class Solution {
     public Solution(int numOptionalAttendees, Collection<TimeRange> solution) {
       this.numOptionalAttendees = numOptionalAttendees;
       this.solution = solution;
-      // If the solution list is empty, it couldnt be solved
+      // If the solution list is empty, it couldn't be solved
       this.isValidSolution = solution.size() != 0;
     }
 
