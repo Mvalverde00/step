@@ -30,4 +30,41 @@ public final class GreeterTest {
 
     Assert.assertEquals("Hello Ada", greeting);
   }
+
+  @Test
+  public void testGreetingTrimsWhitespace() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet("   Ada   ");
+
+    // Whitespace should be trimmed
+    Assert.assertEquals("Hello Ada", greeting);
+  }
+
+  @Test
+  public void testGreetingRemovesSpecialChars() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet("M#i@c$$$hae@#$l");
+
+    // Whitespace should be trimmed
+    Assert.assertEquals("Hello Michael", greeting);
+  }
+
+  @Test
+  public void testGreetingRemovesSpecialCharsAndTrimsWhitespace() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet("  $ @ # Mich@ael #   #");
+
+    // special chars should be removed and resultant whitespace trimmed
+    Assert.assertEquals("Hello Michael", greeting);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testGreetingNullInput() {
+    Greeter greeter = new Greeter();
+
+    String greeting = greeter.greet(null);
+  }
 }

@@ -14,14 +14,40 @@
 
 package com.google.sps;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
 /**
  * Utility class for creating greeting messages.
  */
 public class Greeter {
+
+  private static final Set<Character> illegalChars =
+      new HashSet<>(Arrays.asList('@','$','#'));
+
   /**
    * Returns a greeting for the given name.
    */
-  public String greet(String name) {
+  public String greet(String name) throws IllegalArgumentException {
+    if (name == null) {
+      throw new IllegalArgumentException("Name cannot be null");
+    }
+
+    name = removeIllegalChars(name);
+    name = name.trim();
     return "Hello " + name;
+  }
+
+  public String removeIllegalChars(String str) {
+    StringBuilder newString = new StringBuilder();
+
+    for (char c : str.toCharArray()) {
+      if (!illegalChars.contains(c)) {
+        newString.append(c);
+      }
+    }
+
+    return newString.toString();
   }
 }
